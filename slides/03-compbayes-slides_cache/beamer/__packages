@@ -1,0 +1,17 @@
+base
+papaja
+bookdown
+partitions
+MASS
+dplyr
+tidyr
+purrr
+readr
+extraDistr
+ggplot2
+Rcpp
+brms
+StanHeaders
+rstan
+bayesplot
+tictoc
