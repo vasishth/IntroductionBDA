@@ -1,0 +1,12 @@
+  \setbeamercolor{frametitle}{bg=gray}
+  \hypersetup{colorlinks,citecolor=orange,filecolor=red,linkcolor=brown,urlcolor=blue}
+% \setsansfont[BoldFont={FiraSans-Bold.ttf}]{FiraSans-Light.ttf}
+% \setmonofont{FiraMono-Regular.ttf}
+\usepackage[sfdefault]{FiraSans}
+\newcommand{\hideFromPandoc}[1]{#1}
+         \hideFromPandoc{
+             \let\Begin\begin
+             \let\End\end
+         }
+
+\setbeamerfont{caption}{size=\scriptsize}
