@@ -481,8 +481,7 @@ We saw two examples where we can do the computations to derive the posterior usi
 Some sampling approaches are:
 
   - Gibbs sampling using inversion sampling
-  - Metropolis-Hasting
+  - Random Walk Metropolis
   - Hamiltonian Monte Carlo
 
-We won't discuss these in this course. 
-
+We turn to this topic next.
