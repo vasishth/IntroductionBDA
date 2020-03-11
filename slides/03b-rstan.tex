@@ -1,0 +1,748 @@
+\PassOptionsToPackage{unicode=true}{hyperref} % options for packages loaded elsewhere
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[12pt,ignorenonframetext,aspectratio=169]{beamer}
+\usepackage{pgfpages}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsempty
+% Prevent slide breaks in the middle of a paragraph:
+\widowpenalties 1 10000
+\raggedbottom
+\setbeamertemplate{part page}{
+\centering
+\begin{beamercolorbox}[sep=16pt,center]{part title}
+  \usebeamerfont{part title}\insertpart\par
+\end{beamercolorbox}
+}
+\setbeamertemplate{section page}{
+\centering
+\begin{beamercolorbox}[sep=12pt,center]{part title}
+  \usebeamerfont{section title}\insertsection\par
+\end{beamercolorbox}
+}
+\setbeamertemplate{subsection page}{
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{part title}
+  \usebeamerfont{subsection title}\insertsubsection\par
+\end{beamercolorbox}
+}
+\AtBeginPart{
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \ifbibliography
+  \else
+    \frame{\sectionpage}
+  \fi
+}
+\AtBeginSubsection{
+  \frame{\subsectionpage}
+}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provides euro and other symbols
+\else % if luatex or xelatex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+\usetheme[]{metropolis}
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage[]{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\usepackage{hyperref}
+\hypersetup{
+            pdftitle={Computational Bayesian data analysis},
+            pdfauthor={Bruno Nicenboim / Shravan Vasishth},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\newif\ifbibliography
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs}
+\usepackage{caption}
+% These lines are needed to make table captions work with longtable:
+\makeatletter
+\def\fnum@table{\tablename~\thetable}
+\makeatother
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+
+% set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
+  \setbeamercolor{frametitle}{bg=gray}
+  \hypersetup{colorlinks,citecolor=orange,filecolor=red,linkcolor=brown,urlcolor=blue}
+% \setsansfont[BoldFont={FiraSans-Bold.ttf}]{FiraSans-Light.ttf}
+% \setmonofont{FiraMono-Regular.ttf}
+\usepackage[sfdefault]{FiraSans}
+\newcommand{\hideFromPandoc}[1]{#1}
+         \hideFromPandoc{
+             \let\Begin\begin
+             \let\End\end
+         }
+
+\setbeamerfont{caption}{size=\scriptsize}
+
+\title{Computational Bayesian data analysis}
+\providecommand{\subtitle}[1]{}
+\subtitle{Stan language}
+\author{Bruno Nicenboim / Shravan Vasishth}
+\date{2020-03-11}
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}
+\tableofcontents[hideallsubsections]
+\end{frame}
+\begin{frame}
+
+Stan is (mostly) written in C++ and can be accessed through several interfaces:
+
+\begin{itemize}
+\tightlist
+\item
+  R
+\item
+  Python
+\item
+  Matlab
+\item
+  Stata
+\item
+  bash
+\item
+  etc
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{A Stan program}
+\protect\hypertarget{a-stan-program}{}
+
+\begin{itemize}
+\tightlist
+\item
+  usually saved as a \texttt{.stan} file
+\item
+  accessed through R (or other interfaces)
+\item
+  organized into a sequence of optional and obligatory blocks, which must be written in order.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{A Stan program}
+\protect\hypertarget{a-stan-program-1}{}
+
+\tiny
+
+\begin{verbatim}
+functions {
+// This is an optional block used for functions that can be used in other blocks.
+}
+data {
+// Obligatory block that specifies the required data for the model.
+}
+transformed data {
+// Optional block if we want to manipulate the data.
+}
+parameters {
+// Obligatory block that specifies the model's parameters.
+}
+transformed parameters {
+// Optional block if we want to manipulate the parameters (re-parametrize the model).
+}
+model {
+// Obligatory block that specifies the model's likelihood and priors.
+}
+generated quantities {
+// Optional block if we want to manipulate the output of our model.
+}
+\end{verbatim}
+
+\end{frame}
+
+\begin{frame}[fragile]{A Stan program}
+\protect\hypertarget{a-stan-program-2}{}
+
+\begin{itemize}
+\tightlist
+\item
+  every variable used needs to be declared first with its type (real, integer, vector, matrix, etc.).
+\item
+  there must be a semi-colon (\texttt{;}) at the end of each line.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\begin{block}{Some examples of data type below (but check the \href{https://mc-stan.org/docs/2_22/reference-manual/data-types-chapter.html}{Stan reference manual} for more):}
+
+\begin{itemize}
+\tightlist
+\item
+  Variable \texttt{mu} contains a real number, either positive or negative:
+\end{itemize}
+
+\texttt{real\ mu;}
+
+\begin{itemize}
+\tightlist
+\item
+  Variable \texttt{X} contains a real number that is bounded between two numbers (or by only one). Suppose \texttt{X} is some type of measurement that can only be between 0 and 1000. (We can add lower and/or upper to any type.)
+\end{itemize}
+
+\texttt{real\textless{}lower\ =\ 0,\ upper\ =\ 1000\textgreater{}\ \ X;}
+
+\end{block}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\begin{itemize}
+\tightlist
+\item
+  Variable \texttt{N} contains integers, such as the number of observations (which should be \(>0\)):
+\end{itemize}
+
+\texttt{int\textless{}lower\ =\ 0\textgreater{}\ \ N;}
+
+\begin{itemize}
+\tightlist
+\item
+  For vectors, row\_vectors and matrices, we must define the number of elements (in each margin) that they will contain. This number can be defined earlier (such as \texttt{N}, the number of observations, in our example). (In Stan, the values inside a vectors and matrices are always \emph{real}.)
+\end{itemize}
+
+\texttt{vector\textless{}lower\ =\ 0\textgreater{}\ {[}N{]}\ Y;}
+
+\texttt{row\_vector\textless{}lower\ =\ 0\textgreater{}\ {[}10{]}\ Y;}
+
+\texttt{matrix\textless{}upper\ =\ 0\textgreater{}\ {[}3,\ J{]}\ Rho;}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\begin{itemize}
+\tightlist
+\item
+  Any type can be converted into an array of as many dimensions as we want, even vectors and matrices. It's worthwhile to take a look at \href{https://mc-stan.org/docs/2_22/reference-manual/array-data-types-section.html}{Array Data Types section of the Stan reference manual}.
+\end{itemize}
+
+\texttt{real\ mu{[}2{]};\ \ //\ one\ dimension,\ two\ places}
+
+\texttt{int\textless{}lower\ =\ 0\textgreater{}\ \ N{[}x,y,z{]};\ //\ 3\ dimensions,\ with\ x,\ y,\ z\ places.}
+
+\texttt{vector\textless{}lower\ =\ 0\textgreater{}\ {[}N{]}\ Y{[}2{]};\ //\ array\ of\ one\ dimensions\ that\ contain\ 2\ vectors\ of\ N\ places}
+
+\end{frame}
+
+\begin{frame}{Example: Cloze probability with Stan (Binomial likelihood)}
+\protect\hypertarget{sec:clozestan}{}
+
+\begin{block}{We want to derive the posterior distribution of the Cloze probability of \emph{``umbrella''}, \(\theta\):}
+
+\begin{itemize}
+\tightlist
+\item
+  Data: a word (e.g., \emph{``umbrella''}) was answered 80 out of 100 times,
+\item
+  Likelihood: a binomial distribution
+\item
+  Prior for \(\theta\): \(Beta(a=4,b=4)\)
+\end{itemize}
+
+\end{block}
+
+\end{frame}
+
+\begin{frame}[fragile]{Example: Cloze probability with Stan (Binomial likelihood)}
+\protect\hypertarget{sec:clozestan}{}
+
+\scriptsize
+
+\begin{verbatim}
+data {
+  int<lower = 1> N;  // Total number of answers 
+  int<lower = 0, upper = N> k;  // Number of times "umbrella" was answered
+}
+parameters {
+  // theta is a probability, it has to be constrained between 0 and 1
+  real<lower = 0, upper = 1> theta;
+}
+model {
+  // Prior on theta:
+  target += beta_lpdf(theta | 4, 4); 
+  // Likelihood:
+  target += binomial_lpmf(k | N, theta); 
+}
+\end{verbatim}
+
+\normalsize
+
+(*) every statement with \texttt{target\ +=} increments the unnormalized \emph{log} posterior probability.
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\begin{itemize}
+\tightlist
+\item
+  Save the previous model as \texttt{stan\_models/binomial.stan} (don't run it in R).
+\item
+  Use the following code to call the model from R:
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(rstan)}
+\KeywordTok{options}\NormalTok{(}\DataTypeTok{mc.cores =}\NormalTok{ parallel}\OperatorTok{::}\KeywordTok{detectCores}\NormalTok{())}
+\NormalTok{lst_cloze_data <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{k =} \DecValTok{80}\NormalTok{, }\DataTypeTok{N =} \DecValTok{100}\NormalTok{)}
+\CommentTok{# Fit the model with the default values of number}
+\CommentTok{# of chains and iterations (chains = 4,iter = 2000)}
+\NormalTok{fit_cloze <-}\StringTok{ }\KeywordTok{stan}\NormalTok{(}
+  \DataTypeTok{file =} \StringTok{"stan_models/binomial_cloze.stan"}\NormalTok{,}
+  \DataTypeTok{data =}\NormalTok{ lst_cloze_data}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\scriptsize
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit_cloze}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Inference for Stan model: binomial_cloze.
+## 4 chains, each with iter=2000; warmup=1000; thin=1; 
+## post-warmup draws per chain=1000, total post-warmup draws=4000.
+## 
+##        mean se_mean   sd  2.5%   25%   50%  75%   98%
+## theta  0.78    0.00 0.04  0.69  0.75  0.78  0.8  0.85
+## lp__  -5.05    0.02 0.73 -7.15 -5.23 -4.77 -4.6 -4.54
+##       n_eff Rhat
+## theta  1412    1
+## lp__   1922    1
+## 
+## Samples were drawn using NUTS(diag_e) at Wed Mar 11 15:18:52 2020.
+## For each parameter, n_eff is a crude measure of effective sample size,
+## and Rhat is the potential scale reduction factor on split chains (at 
+## convergence, Rhat=1).
+\end{verbatim}
+
+\normalsize
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\texttt{bayesplot} (Gabry and Mahr 2019) is a wrapper around \texttt{ggplot2} (Wickham et al. 2019) and has several convenient functions to plot the samples (see their \href{https://mc-stan.org/bayesplot/articles/plotting-mcmc-draws.html}{vignette}).
+
+\scriptsize
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(bayesplot)}
+\CommentTok{# We need to convert the fit to plot it with bayesplot functions}
+\NormalTok{df_fit_cloze <-}\StringTok{ }\KeywordTok{as.data.frame}\NormalTok{(fit_cloze)}
+\CommentTok{# Bayes plot functions start with mcmc_}
+\KeywordTok{mcmc_dens}\NormalTok{(df_fit_cloze, }\DataTypeTok{pars =} \StringTok{"theta"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_vline}\NormalTok{(}\DataTypeTok{xintercept =} \KeywordTok{mean}\NormalTok{(df_fit_cloze}\OperatorTok{$}\NormalTok{theta))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{03b-rstan_files/figure-beamer/unnamed-chunk-3-1.pdf}
+
+\normalsize
+
+\end{frame}
+
+\begin{frame}{A more complex Stan model}
+\protect\hypertarget{a-more-complex-stan-model}{}
+
+\begin{equation}
+\begin{aligned}
+rt_n &\sim LogNormal(\mu, \sigma)\\
+\mu &\sim Normal(6, 1.5) \\
+\sigma &\sim Normal_+(0, 1) 
+\end{aligned}
+\label{eq:infrtpriors}
+\end{equation}
+
+\end{frame}
+
+\begin{frame}[fragile]{A more complex Stan model}
+\protect\hypertarget{a-more-complex-stan-model-1}{}
+
+\scriptsize
+
+\begin{verbatim}
+data {
+  int<lower=1> N_obs;
+  vector[N_obs] rt;
+}
+parameters {
+  real<lower=0> sigma;
+  real mu;
+}
+model {
+  target += normal_lpdf(mu | 6, 1.5);
+  target += normal_lpdf(sigma | 0, 1)  -
+    normal_lccdf(0 | 0, 1);
+  target += lognormal_lpdf(rt | mu, sigma); 
+}
+generated quantities {
+  vector[N_obs] rt_sim;
+  // posterior predictive
+  for(i in 1:N_obs) {
+    rt_sim[i] = lognormal_rng(mu, sigma);
+  }
+}
+\end{verbatim}
+
+\normalsize
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\scriptsize
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(dplyr)}
+\KeywordTok{library}\NormalTok{(readr)}
+\NormalTok{df_noreading_data <-}
+\StringTok{  }\KeywordTok{read_csv}\NormalTok{(}\StringTok{"./data/button_press.csv"}\NormalTok{)}
+\NormalTok{lst_noreading <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}
+  \DataTypeTok{N_obs =} \KeywordTok{nrow}\NormalTok{(df_noreading_data),}
+  \DataTypeTok{rt =}\NormalTok{ df_noreading_data}\OperatorTok{$}\NormalTok{rt}
+\NormalTok{)}
+
+\NormalTok{fit_lognormal_reading <-}\StringTok{ }\KeywordTok{stan}\NormalTok{(}\StringTok{"stan_models/lognormal.stan"}\NormalTok{,}
+  \DataTypeTok{data =}\NormalTok{ lst_noreading}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\normalsize
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\scriptsize
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{print}\NormalTok{(fit_lognormal_reading, }\DataTypeTok{pars =} \KeywordTok{c}\NormalTok{(}\StringTok{"sigma"}\NormalTok{, }\StringTok{"mu"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Inference for Stan model: lognormal.
+## 4 chains, each with iter=2000; warmup=1000; thin=1; 
+## post-warmup draws per chain=1000, total post-warmup draws=4000.
+## 
+##       mean se_mean   sd 2.5%  25%  50%  75%  98% n_eff
+## sigma 0.13       0 0.01 0.13 0.13 0.13 0.14 0.15  3081
+## mu    5.12       0 0.01 5.10 5.11 5.12 5.12 5.13  4482
+##       Rhat
+## sigma    1
+## mu       1
+## 
+## Samples were drawn using NUTS(diag_e) at Wed Mar 11 15:46:49 2020.
+## For each parameter, n_eff is a crude measure of effective sample size,
+## and Rhat is the potential scale reduction factor on split chains (at 
+## convergence, Rhat=1).
+\end{verbatim}
+
+\normalsize
+
+\end{frame}
+
+\begin{frame}[fragile]{Extracting Stan code from brms}
+\protect\hypertarget{extracting-stan-code-from-brms}{}
+
+\scriptsize
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(brms)}
+\NormalTok{fit_press_ln <-}\StringTok{ }\KeywordTok{brm}\NormalTok{(rt }\OperatorTok{~}\StringTok{ }\DecValTok{1}\NormalTok{,}
+  \DataTypeTok{data =}\NormalTok{ df_noreading_data,}
+  \DataTypeTok{family =} \KeywordTok{lognormal}\NormalTok{(),}
+  \DataTypeTok{prior =} \KeywordTok{c}\NormalTok{(}
+    \KeywordTok{prior}\NormalTok{(}\KeywordTok{normal}\NormalTok{(}\DecValTok{6}\NormalTok{, }\FloatTok{1.5}\NormalTok{), }\DataTypeTok{class =}\NormalTok{ Intercept),}
+    \KeywordTok{prior}\NormalTok{(}\KeywordTok{normal}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{), }\DataTypeTok{class =}\NormalTok{ sigma)}
+\NormalTok{  )}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\normalsize
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\begin{block}{Extracting code when the model was run:}
+
+\vspace{1cm}
+
+\small
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{stancode}\NormalTok{(fit_press_ln)}
+\end{Highlighting}
+\end{Shaded}
+
+\normalsize
+
+\end{block}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\scriptsize
+
+\begin{verbatim}
+## // generated with brms 2.12.0 
+##  functions { 
+##  } 
+##  data { 
+##    int<lower=1> N;  // number of observations 
+##    vector[N] Y;  // response variable 
+##    int prior_only;  // should the likelihood be ignored? 
+##  } 
+##  transformed data { 
+##  } 
+##  parameters { 
+##    real Intercept;  // temporary intercept for centered predictors 
+##    real<lower=0> sigma;  // residual SD 
+##  } 
+##  transformed parameters { 
+##  } 
+##  model {
+\end{verbatim}
+
+\normalsize
+
+\textbf{\ldots{}}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\textbf{\ldots{}}
+
+\scriptsize
+
+\begin{verbatim}
+## } 
+##  model { 
+##    // initialize linear predictor term 
+##    vector[N] mu = Intercept + rep_vector(0, N); 
+##    // priors including all constants 
+##    target += normal_lpdf(Intercept | 6, 1.5); 
+##    target += normal_lpdf(sigma | 0, 1) 
+##      - 1 * normal_lccdf(0 | 0, 1); 
+##    // likelihood including all constants 
+##    if (!prior_only) { 
+##      target += lognormal_lpdf(Y | mu, sigma); 
+##    } 
+##  } 
+##  generated quantities { 
+##    // actual population-level intercept 
+##    real b_Intercept = Intercept; 
+##  }
+\end{verbatim}
+
+\normalsize
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\begin{block}{Extracting code before the model was run:}
+
+\vspace{1cm}
+
+\scriptsize
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{make_stancode}\NormalTok{(rt }\OperatorTok{~}\StringTok{ }\DecValTok{1}\NormalTok{,}
+  \DataTypeTok{data =}\NormalTok{ df_noreading_data,}
+  \DataTypeTok{family =} \KeywordTok{lognormal}\NormalTok{(),}
+  \DataTypeTok{prior =} \KeywordTok{c}\NormalTok{(}
+    \KeywordTok{prior}\NormalTok{(}\KeywordTok{normal}\NormalTok{(}\DecValTok{6}\NormalTok{, }\FloatTok{1.5}\NormalTok{), }\DataTypeTok{class =}\NormalTok{ Intercept),}
+    \KeywordTok{prior}\NormalTok{(}\KeywordTok{normal}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{), }\DataTypeTok{class =}\NormalTok{ sigma)}
+\NormalTok{  )}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\normalsize
+
+\end{block}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\begin{block}{Extracting the data when the model was run:}
+
+\vspace{.5cm}
+
+\scriptsize
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ls_stan <-}\StringTok{ }\KeywordTok{standata}\NormalTok{(fit_press_ln)}
+\NormalTok{ls_stan }\OperatorTok{%>%}\StringTok{ }\KeywordTok{str}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## List of 5
+##  $ N         : int 361
+##  $ Y         : num [1:361(1d)] 141 138 128 132 126 134 163 149 133 110 ...
+##  $ K         : int 1
+##  $ X         : num [1:361, 1] 1 1 1 1 1 1 1 1 1 1 ...
+##   ..- attr(*, "dimnames")=List of 2
+##   .. ..$ : chr [1:361] "1" "2" "3" "4" ...
+##   .. ..$ : chr "Intercept"
+##   ..- attr(*, "assign")= int 0
+##  $ prior_only: int 0
+##  - attr(*, "class")= chr "standata"
+\end{verbatim}
+
+\normalsize
+
+\end{block}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\begin{block}{Extracting the data before the model was run:}
+
+\vspace{1cm}
+
+\scriptsize
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ls_stan <-}\StringTok{ }\KeywordTok{make_standata}\NormalTok{(rt }\OperatorTok{~}\StringTok{ }\DecValTok{1}\NormalTok{,}
+  \DataTypeTok{data =}\NormalTok{ df_noreading_data,}
+  \DataTypeTok{family =} \KeywordTok{lognormal}\NormalTok{(),}
+  \DataTypeTok{prior =} \KeywordTok{c}\NormalTok{(}
+    \KeywordTok{prior}\NormalTok{(}\KeywordTok{normal}\NormalTok{(}\DecValTok{6}\NormalTok{, }\FloatTok{1.5}\NormalTok{), }\DataTypeTok{class =}\NormalTok{ Intercept),}
+    \KeywordTok{prior}\NormalTok{(}\KeywordTok{normal}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{), }\DataTypeTok{class =}\NormalTok{ sigma)}
+\NormalTok{  )}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\normalsize
+
+\end{block}
+
+\end{frame}
+
+\begin{frame}{References}
+\protect\hypertarget{references}{}
+
+\hypertarget{refs}{}
+\leavevmode\hypertarget{ref-R-bayesplot}{}%
+Gabry, Jonah, and Tristan Mahr. 2019. \emph{Bayesplot: Plotting for Bayesian Models}. \url{https://CRAN.R-project.org/package=bayesplot}.
+
+\leavevmode\hypertarget{ref-R-ggplot2}{}%
+Wickham, Hadley, Winston Chang, Lionel Henry, Thomas Lin Pedersen, Kohske Takahashi, Claus Wilke, Kara Woo, and Hiroaki Yutani. 2019. \emph{Ggplot2: Create Elegant Data Visualisations Using the Grammar of Graphics}. \url{https://CRAN.R-project.org/package=ggplot2}.
+
+\end{frame}
+
+\end{document}

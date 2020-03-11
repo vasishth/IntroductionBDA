@@ -100,7 +100,6 @@ library(bayesplot)
 ```{r, echo = FALSE, message=FALSE}
 lst_cloze_data <- list(k = 80, N = 100)
 # Fit the model with the default values of number of chains and iterations
-# chains = 4,    iter = 2000
 fit_cloze <- stan(
   file = "stan_models/binomial_cloze.stan", data = lst_cloze_data,
   warmup = 1000,
