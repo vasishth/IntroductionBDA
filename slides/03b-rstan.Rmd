@@ -1,0 +1,337 @@
+---
+title: "Computational Bayesian data analysis"
+subtitle: "Stan language"
+author: "Bruno Nicenboim / Shravan Vasishth"
+date: "`r Sys.Date()`"
+output:
+  bookdown::beamer_presentation2:
+    theme: "metropolis"
+    keep_tex: yes 
+    latex_engine: xelatex
+    slide_level: 2
+    incremental: no
+    number_sections: true 
+    includes: 
+      in_header: top-matter.tex
+fontsize: 12pt
+classoption: aspectratio=169
+bibliography: ["BayesCogSci.bib", "packages.bib"]
+---
+
+
+----------
+
+```{r setup, include=FALSE, cache=FALSE}
+knitr::opts_chunk$set(tidy = "styler",
+                      cache=TRUE,
+                      size = "small"
+                      )
+
+## Reduces the size of the font in code
+## https://stackoverflow.com/questions/25646333/code-chunk-font-size-in-rmarkdown-with-knitr-and-latex
+def.chunk.hook  <- knitr::knit_hooks$get("chunk")
+knitr::knit_hooks$set(chunk = function(x, options) {
+    x <- def.chunk.hook(x, options)
+    ifelse(options$size != "normalsize", paste0("\n \\", options$size,"\n\n", x, "\n\n \\normalsize"), x)
+})
+
+options(
+    htmltools.dir.version = FALSE,
+    formatR.indent = 2,
+    width = 55,
+    digits = 2,
+    signif =2,
+    warnPartialMatchAttr = FALSE,
+    warnPartialMatchDollar = FALSE,
+    # Don't use scientific notation:
+    scipen=10000,
+    # tibbles:
+    tibble.width = Inf,
+    tibble.print_max = 5,
+    tibble.print_min = 5
+)
+library(papaja)
+library(bookdown)
+ggplot2::theme_set(ggplot2::theme_light())
+library(partitions)
+```
+
+
+Stan is (mostly) written in C++ and can be accessed through several interfaces:
+
+- R
+- Python
+- Matlab
+- Stata
+- bash
+- etc 
+
+
+
+## A Stan program
+
+- usually saved as a `.stan` file
+- accessed through R (or other interfaces)
+- organized into a sequence of optional and obligatory blocks, which must be written in order.
+
+
+## A Stan program
+
+\tiny
+
+```
+functions {
+// This is an optional block used for functions that can be used in other blocks.
+}
+data {
+// Obligatory block that specifies the required data for the model.
+}
+transformed data {
+// Optional block if we want to manipulate the data.
+}
+parameters {
+// Obligatory block that specifies the model's parameters.
+}
+transformed parameters {
+// Optional block if we want to manipulate the parameters (re-parametrize the model).
+}
+model {
+// Obligatory block that specifies the model's likelihood and priors.
+}
+generated quantities {
+// Optional block if we want to manipulate the output of our model.
+}
+```
+
+## A Stan program
+
+- every variable used needs to be declared first with its type (real, integer, vector, matrix, etc.). 
+- there must be a semi-colon (`;`) at the end of each line.
+
+----
+
+### Some examples  of data type below (but check the [Stan reference manual](https://mc-stan.org/docs/2_22/reference-manual/data-types-chapter.html) for more):
+
+- Variable `mu` contains a real number, either positive or negative:
+
+`real mu;`
+
+- Variable `X` contains a real number that is bounded between two numbers (or by only one). Suppose `X` is some type of measurement that can only be between 0 and 1000. (We can add lower and/or upper to any type.)
+
+
+`real<lower = 0, upper = 1000>  X;`
+
+------
+
+- Variable `N` contains integers, such as the number of observations (which should be $>0$):
+
+`int<lower = 0>  N;`
+
+  - For vectors, row_vectors and matrices, we must define the number of elements (in each margin) that they will contain. This number can be defined earlier (such as `N`, the number of observations, in our example).  (In Stan, the values inside a vectors and matrices are always *real*.)
+
+`vector<lower = 0> [N] Y;`
+
+`row_vector<lower = 0> [10] Y;`
+
+`matrix<upper = 0> [3, J] Rho;`
+
+----
+
+- Any type can be converted into an array of as many dimensions as we want, even vectors and matrices. It's worthwhile to take a look at [Array Data Types section of the Stan reference manual](https://mc-stan.org/docs/2_22/reference-manual/array-data-types-section.html).
+
+`real mu[2];  // one dimension, two places`
+
+
+`int<lower = 0>  N[x,y,z]; // 3 dimensions, with x, y, z places.`
+
+`vector<lower = 0> [N] Y[2]; // array of one dimensions that contain 2 vectors of N places`
+
+
+## Example: Cloze probability with Stan (Binomial likelihood) {#sec:clozestan}
+
+### We want to derive  the posterior distribution of the Cloze probability of *"umbrella"*, $\theta$:
+* Data: a word (e.g., *"umbrella"*) was answered 80 out of 100 times,
+* Likelihood: a  binomial distribution 
+* Prior for $\theta$:  $Beta(a=4,b=4)$
+
+
+
+## Example: Cloze probability with Stan (Binomial likelihood) {#sec:clozestan}
+
+```{r binomial_stan_code, tidy = TRUE, comment="", echo=FALSE, size = "scriptsize"}
+cat(readLines("stan_models/binomial_cloze.stan"), sep = "\n")   
+```
+
+(\*) every statement with `target +=` increments the unnormalized *log* posterior probability. 
+
+<!-- We do this because adding to the unnormalized log posterior means to multiply a term in the numerator of the unnormalized posterior. Stan uses the shape of the unnormalized posterior to sample from the normalized posterior. (This normalization is not trivial at all, since the posterior can be very multidimensional). -->
+
+
+----
+
+- Save the previous model as `stan_models/binomial.stan` (don't run it in R).
+- Use the following code to call the model from R:
+
+<!-- We need to save the data as a `list`, before fitting the model with it. In this simple case, the data is just the number of times a given word was given as an answer, and the total number of answers. We'll fit the model with the default number of chains and iterations. (This default is usually fine).  -->
+
+
+```{r, message=FALSE, size = "normalsize"}
+library(rstan)
+options(mc.cores = parallel::detectCores())
+lst_cloze_data <- list(k = 80, N = 100)
+# Fit the model with the default values of number
+# of chains and iterations (chains = 4,iter = 2000)
+fit_cloze <- stan(file = 'stan_models/binomial_cloze.stan',
+                  data = lst_cloze_data)
+```
+-----
+
+```{r, size = "scriptsize"}
+fit_cloze
+```
+
+
+
+
+<!-- ```{r, fig.height=2} -->
+<!-- traceplot(fit_cloze, pars=c("theta")) -->
+<!-- ``` -->
+
+
+<!-- We can see a summary of the posterior by "printing" the model's fit or plotting it. The summary displayed by `print`  includes means,  standard  deviations  (`sd`),  quantiles,  Monte Carlo standard errors (`se_mean`), split Rhats, and effective sample sizes (`n_eff`).  The summaries are computed after removing the warmup  and merging together all chains. Notice that the `se_mean` is unrelated to the `se` of an estimate in the parallel frequentist model.  The package `bayesplot` [@R-bayesplot] is a wrapper around `ggplot2` [@R-ggplot2] and has several convenient functions to plot the samples (see the relevant [vignette](https://mc-stan.org/bayesplot/articles/plotting-mcmc-draws.html)). -->
+
+------
+
+`bayesplot` [@R-bayesplot] is a wrapper around `ggplot2` [@R-ggplot2] and has several convenient functions to plot the samples (see their [vignette](https://mc-stan.org/bayesplot/articles/plotting-mcmc-draws.html)).
+
+```{r, message = FALSE, size = "scriptsize", fig.height = 3}
+library(bayesplot)
+# We need to convert the fit to plot it with bayesplot functions
+df_fit_cloze <- as.data.frame(fit_cloze)
+# Bayes plot functions start with mcmc_
+mcmc_dens(df_fit_cloze, pars = "theta") +
+    geom_vline(xintercept = mean(df_fit_cloze$theta))
+```
+
+
+## A more complex Stan model
+
+\begin{equation}
+\begin{aligned}
+rt_n &\sim LogNormal(\mu, \sigma)\\
+\mu &\sim Normal(6, 1.5) \\
+\sigma &\sim Normal_+(0, 1) 
+\end{aligned}
+(\#eq:infrtpriors)
+\end{equation}
+
+
+## A more complex Stan model
+
+```{r normal_code, tidy = TRUE, comment="", echo=FALSE, size = "scriptsize"}
+cat(readLines("./stan_models/lognormal.stan"), sep = "\n") 
+```
+
+----
+
+```{r results="hide",message=FALSE, size = "scriptsize"}
+library(dplyr)
+library(readr)
+df_noreading_data <-
+  read_csv("./data/button_press.csv")
+lst_noreading <- list(N_obs=nrow(df_noreading_data),
+                      rt= df_noreading_data$rt)
+
+fit_lognormal_reading <-stan("stan_models/lognormal.stan",
+                       data=lst_noreading)
+```
+
+----
+
+```{r, message = FALSE, size = "scriptsize"}
+print(fit_lognormal_reading, pars = c("sigma", "mu"))
+```
+
+## Extracting Stan code from brms
+
+```{r, message = FALSE, size = "scriptsize", results = "hide"}
+library(brms)
+fit_press_ln <- brm(rt ~ 1,
+                    data = df_noreading_data,
+                    family = lognormal(),
+                    prior = c(
+                      prior(normal(6, 1.5), class = Intercept),
+                      prior(normal(0, 1), class = sigma)
+                    )
+                    )
+```
+
+----
+
+### Extracting code when the model was run:
+
+\vspace{1cm}
+```{r, eval = FALSE}
+stancode(fit_press_ln)
+```
+
+----
+
+```{r, size = "scriptsize", echo = FALSE}
+code <- capture.output(stancode(fit_press_ln))
+cat(paste(code[1:17],"\n"))
+```
+
+**...**
+
+----
+
+**...**
+```{r, size = "scriptsize", echo = FALSE}
+cat(paste(code[16:length(code)],"\n"))
+```
+
+-----
+
+### Extracting code before the model was run:
+\vspace{1cm}
+```{r, size = "scriptsize", eval = FALSE}
+make_stancode(rt ~ 1,
+  data = df_noreading_data,
+  family = lognormal(),
+  prior = c(
+    prior(normal(6, 1.5), class = Intercept),
+    prior(normal(0, 1), class = sigma)
+  )
+)
+```
+
+----
+
+
+### Extracting the data when the model was run:
+
+\vspace{.5cm}
+```{r, size = "scriptsize"}
+ls_stan <- standata(fit_press_ln)
+ls_stan %>% str()
+```
+
+----
+
+### Extracting the data before the model was run:
+
+\vspace{1cm}
+
+```{r, size = "scriptsize"}
+ls_stan <- make_standata(rt ~ 1,
+              data = df_noreading_data,
+              family = lognormal(),
+              prior = c(
+                prior(normal(6, 1.5), class = Intercept),
+                prior(normal(0, 1), class = sigma)
+              ))
+```
+
+
+## References
