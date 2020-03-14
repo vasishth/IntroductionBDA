@@ -1,0 +1,64 @@
+---
+title: "Exercises for Bayesian Hierarchical models"
+author: Bruno Nicenboim and Shravan Vasishth
+output: pdf_document
+bibliography: ["BayesCogSci.bib", "packages.bib"]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Hierarchical model with a lognormal likelihood
+
+ We begin with a classic question from the psycholinguistics literature: are subject relatives easier to process than object relatives? The data come from Experiment 1 in a paper by @grodner.
+
+ *Scientific question*: Is there a subject relative advantage in reading?
+
+ In two important papers, @gibson00 and @grodner suggest that object relative clause sentences are more difficult to process than subject relative clause sentences because the distance between the relative clause verb *sent* and the head noun phrase of the relative clause, *reporter*, is longer in object vs subject relatives. Examples are shown below.
+
+ (1a) The *reporter* who the photographer *sent* to the editor was hoping for a good story. (ORC)
+
+ (1b) The *reporter* who *sent* the photographer to the editor was hoping for a good story. (SRC)
+
+ The underlying explanation has to do with memory processes: shorter linguistic dependencies are easier to process due to either reduced interference or decay, or both. For implemented computational models that spell this point out, see @lewisvasishth:cogsci05 and @EngelmannJaegerVasishthSubmitted2018.
+
+ In the Grodner and Gibson data, the dependent measure is reading time at the relative clause verb, in milliseconds. We are expecting longer reading times in object gap sentences compared to subject gap.
+
+
+### Reading the data and basic pre-processing
+
+```{r open_grodneretal, message = FALSE}
+library(dplyr)
+library(readr)
+library(ggplot2)
+library(brms)
+## Parallelize the chains using all the cores:
+options(mc.cores = parallel::detectCores())
+library(bayesplot)
+
+gg05_data <- read_csv("data/GrodnerGibson2005E1.csv") %>%
+    filter(item != 0) %>%
+    mutate(word_positionnew = if_else(item != 15 & 
+                                             word_position > 10, 
+                                             word_position-1, 
+                                             word_position))
+#there is a mistake in the coding of word position,
+#all items but 15 have regions 10 and higher coded
+#as words 11 and higher
+
+## get data from relative clause verb:
+rc_data <- gg05_data %>% 
+  filter((condition == "objgap" & word_position == 6 ) |
+            ( condition == "subjgap" & word_position == 4 ))
+```
+
+You should use a sum coding for the predictors. Here, object gaps are coded +1, subject gaps -1.
+
+```{r}
+rc_data <- rc_data %>% mutate(ccond = if_else(condition == "objgap",  1,-1))
+```
+
+You should be able to now fit a maximal model (correlated varying intercept and slopes for subjects and items) assuming a lognormal likelihood, and examine the effect of relative clause attachment site (the predictor `ccond`) on reading times `rawRT`.
+
+## References
