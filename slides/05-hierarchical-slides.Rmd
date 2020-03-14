@@ -102,7 +102,7 @@ In the EEG literature, it has been shown that words with low-predictability are 
 
 -----
  
-```{r mot, fig.cap = "(ref:mot)", out.width = "80%", echo = FALSE, fig.align = "center"}
+```{r mot, fig.cap = "Typical ERP for the grand average across the N400 spatial window (central parietal electrodes: Cz, CP1, CP2, P3, Pz, P4, POz) for high and low predictability nouns (specifically from the constraining context of the experiment reported in Nicenboim, Vasishth, and Rösler 2020). The x-axis indicates time in seconds and the y-axis indicates voltage in microvolts (note that unlike many EEG/ERP plots, the negative polarity is plotted downwards). ", out.width = "80%",out.height="70%", echo = FALSE, fig.align = "center"}
 knitr::include_graphics("cc_figure/N400noun-1.pdf", dpi =1000)
 ```
 
@@ -392,7 +392,7 @@ plot(fit_N400_v, N=6)
 
 ```{r, eval = FALSE, size ="scriptsize"}
 #parnames(m_N400_v)
-ind_effects_v <- paste0("r_subject[",unique(eeg_data$subject), ",ccloze]")
+ind_effects_v <- paste0("r_subject[",unique(eeg_data$subject), ",c_cloze]")
 mcmc_intervals(fit_N400_v, pars=ind_effects_v,
                prob = 0.8,
                prob_outer = 0.95,  

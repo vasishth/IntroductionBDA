@@ -1,0 +1,524 @@
+---
+title: "Model comparison with Bayes factor"
+author: "Bruno Nicenboim / Shravan Vasishth"
+date: "`r Sys.Date()`"
+output:
+  bookdown::beamer_presentation2:
+    theme: "metropolis"
+    keep_tex: yes 
+    latex_engine: xelatex
+    slide_leve  l: 2
+    incremental: no
+    number_sections: true
+    includes: 
+      in_header: top-matter.tex
+fontsize: 12pt
+classoption: aspectratio=169
+bibliography: ["BayesCogSci.bib", "packages.bib"]
+header-includes:
+  \setbeamerfont{caption}{size=\scriptsize}
+---
+
+
+# Model comparison
+  
+  
+  ```{r setup, include=FALSE, cache=FALSE}
+knitr::opts_chunk$set(tidy = "styler",
+                      cache=TRUE
+)
+
+## #Hack to avoid compatibility issues with tikz
+## knitr::knit_hooks$set(document = function(x) {
+##     sub('\\usepackage{color}', '\\usepackage[table]{xcolor}', x, fixed = TRUE)
+## })
+
+options(htmltools.dir.version = FALSE,
+        scipen=999,
+        digits=3)
+library(papaja)
+library(bookdown)
+ggplot2::theme_set(ggplot2::theme_light())
+library(partitions)
+```
+
+
+
+```{r load, cache =FALSE, message=FALSE, echo =FALSE}
+set.seed(42)
+library(MASS)
+library(dplyr)
+library(purrr)
+library(readr)
+library(extraDistr)
+library(ggplot2)
+library(brms)
+## Parallelize the chains using all the cores:
+options(mc.cores = parallel::detectCores())
+library(bayesplot)
+```
+
+
+There are  two perspectives on model comparison: 
+  
+* a (prior) predictive perspective based on the Bayes factor using marginal likelihoods
+* a (posterior) predictive perspective based on cross-validation.
+
+
+
+# Model comparison  using the Bayes factor
+
+## Marginal likelihood
+
+Bayes' rule can be written with reference to  a specific statistical model $\mathcal{M}_1$. 
+\begin{equation}
+p(\boldsymbol{\theta} \mid D, \mathcal{M}_1) = \frac{p(\boldsymbol{\theta} \mid \mathcal{M}_1) p(D\mid \boldsymbol{\theta}, \mathcal{M}_1) }{p(D\mid \mathcal{M}_1)}
+\end{equation}
+
+Here D refers to the data and $\boldsymbol{\theta}$ is a vector of parameters.
+
+
+$P(D\mid \mathcal{M}_1)$ is the marginal likelihood, and is a single number that tells you the likelihood of the observed data D given the model $\mathcal{M}_1$ 
+
+
+The likelihood is evaluated for every possible parameter value, weighted by the prior plausibility and summed together.
+
+## A simple example:
+
+* Model 1
+
+
+```{r }
+l1 <- function(p) dbinom(80,100,p) * dbeta(p,4,2)
+(ml1 <- integrate(l1,0,1)[[1]])
+```
+
+## A simple example:
+
+* Model 2
+
+```{r, size = "scriptsize"}
+l2 <- function(x,y) dbbinom(80,100,x,y) * dlnorm(x,0,100) * 
+  dlnorm(y,0,100)
+(ml2 <- rmutil::int2(l2, a=c(0,0), eps=1e-04, max=12))
+```
+
+## A simple example:
+
+* Model 3
+
+```{r}
+l3 <- function(p) dbinom(80,100,p) * dbeta(p,1,1)
+(ml3 <- integrate(l3,0,1)[[1]])
+```
+
+
+## Bayes factor
+
+**BF** is a measure of relative evidence, compares the predictive performance of two models, by means of a ratio of marginal likelihoods:
+
+
+\begin{equation}
+BF_{12} = \frac{P(D\mid \mathcal{M}_1)}{P(D\mid \mathcal{M}_2)}
+\end{equation}
+
+* $BF_{12}$ indicates the extent to which the data are more probable under $\mathcal{M}_1$ over $\mathcal{M}_2$, or
+
+* which of the two models is more likely to have generated the data, or 
+
+* the relative evidence that we have for $\mathcal{M}_1$ over $\mathcal{M}_2$. 
+
+## Bayes factor interpretation
+
+
+\footnotesize
+
+
+| $BF_{12}$ | Interpretation |
+|--: |:--|
+| $>100$ | Extreme evidence for $\mathcal{M}_1$. |
+|$30-100$| Very strong evidence for $\mathcal{M}_1$. |
+|$10-30$ | Strong evidence for $\mathcal{M}_1$. |
+|$3-10$| Moderate evidence for $\mathcal{M}_1$. |
+|$1-3$ | Anecdotal evidence for $\mathcal{M}_1$. |
+|$1$| No evidence.  | 
+|$\frac{1}{1}-\frac{1}{3}$     | Anecdotal evidence for $\mathcal{M}_2$. |
+|$\frac{1}{3}-\frac{1}{10}$  | Moderate evidence for $\mathcal{M}_2$. |
+|$\frac{1}{10}-\frac{1}{30}$    | Strong evidence for $\mathcal{M}_2$. |
+|$\frac{1}{30}-\frac{1}{100}$| Very strong evidence for $\mathcal{M}_2$. |
+| $<\frac{1}{100}$ | Extreme evidence for $\mathcal{M}_2$. |
+
+
+----
+
+In  our previous example, we can calculate $BF_{12}$, $BF_{13}$, and $BF_{23}$. (Notice that $BF_{21}$ is simply $\frac{1}{BF_{12}}$). 
+
+* $BF_{12} = ml1/ml2 = `r ml1/ml2`$ 
+* $BF_{13} = ml1/ml3= `r ml1/ml3`$
+* $BF_{23} = ml2/ml3 = `r ml2/ml3` = \frac{1}{BF_{32}} =  \frac{1}{`r ml3/ml2`}$
+
+ <!-- Crucially, the Bayes factor can provide evidence  in favor of the null hypothesis -->
+
+## Probability of a model
+
+If we want to know how much more probable model $\mathcal{M}_1$ than  $\mathcal{M}_2$ is given the data, $D$, we need  the prior odds,  how much probable $\mathcal{M}_1$ is than  $\mathcal{M}_2$ *a priori*.
+
+\begin{align}
+\frac{p(\mathcal{M}_1 \mid D)}{p(\mathcal{M}_2 \mid D)} =& \frac{p(\mathcal{M}_1)}{p(\mathcal{M}_2)} \times \frac{P(D\mid \mathcal{M}_1)}{P(D\mid \mathcal{M}_2)}
+\end{align}
+
+
+\begin{align}
+\text{Posterior odds}_{12} = & \text{Prior odds}_{12} \times BF_{12}
+\end{align}
+
+The Bayes factor **only** tells us how much we need to update our relative belief between the two models.
+
+----
+
+
+
+## Example: Null hypothesis testing the N400 effect
+
+While we have previously estimated the effect of cloze probability on the N400, estimation cannot really answer a very popular question: *How much evidence we have in support for the effect of cloze probability?*
+
+\vspace{.3cm}
+We are going to answer this question with the Bayes factor, by doing model comparison: We'll compare a model that assumes a *certain* effect, with a null model that assumes no effect.
+
+----
+  
+  The prior on $\beta$ will be **crucial** for the calculation of the Bayes factor.
+
+<!-- \vspace{.3cm} -->
+<!-- *One* possible good prior for $\beta$:  -->
+
+  \small
+
+1. I generally want to be agnostic regarding the direction of the effect:  I will center the prior of $\beta$ on zero.
+2. I would need to know a bit about the variation on the DV that I'm analyzing. I would say that for N400 averages, the standard deviation of the signal is between 8-15 microvolts.
+3. Effects in psycholinguistics are rather small, representing between 5%-30% of the SD of the DV.
+4. I know that the effect of noun predictability on the N400 is one the most reliable and strongest effects in neurolinguistics, and  $\beta$ represents the change in average voltage when we move from a cloze probability of zero to one --the strongest prediction effect. 
+
+We will start then with $\beta \sim Normal(0,5)$ (since 5 microV is 30% of 15).
+
+----
+
+We are going to "smooth" the Cloze probability in this example:
+\vspace{1cm}
+\footnotesize
+```{r, tidy = FALSE, message = FALSE}
+eeg_data <- read_tsv("data/public_noun_data.txt") %>%
+    filter(lab=="edin") %>%
+    mutate(nans = round(cloze/100 *20),
+           scloze = (nans + 1) / 22,
+           cscloze = scloze - mean(scloze))
+
+```
+
+---
+
+\footnotesize
+
+```{r, message = FALSE, results = "hide", eval = !file.exists("m_N400_h_linear.RDS"), tidy = FALSE}
+m_N400_h_linear <- brm(n400 ~ cscloze +
+                         (cscloze | subject) +
+                         (cscloze | item),
+                       prior = c(prior(normal(2, 5), class = Intercept),
+                                 prior(normal(0, 5), class = b),
+                                 prior(normal(10, 5), class = sigma),
+                                 # taus in our model
+                                 prior(normal(0, 2), class = sd),
+                                 prior(lkj(4), class =cor)),
+                       warmup = 2000,
+                       iter = 20000,
+                       control = list(adapt_delta = 0.9),
+                       save_all_pars = TRUE,
+                       data = eeg_data)
+```
+
+```{r, echo= FALSE}
+if(!file.exists("m_N400_h_linear.RDS")){
+  saveRDS(m_N400_h_linear,"m_N400_h_linear.RDS")
+} else {
+  m_N400_h_linear <- readRDS("m_N400_h_linear.RDS")
+}
+```
+----
+
+\tiny
+
+```{r}
+m_N400_h_linear
+```
+
+-----
+
+And we'll run our model without the parameter of interest, the null model:
+  
+  \footnotesize
+```{r, message = FALSE, results = "hide", eval = !file.exists("m_N400_h_null.RDS"), tidy = FALSE}
+m_N400_h_null <- brm(n400 ~ 1 +
+                       (cscloze | subject) +
+                       (cscloze | item),
+                     prior = c(prior(normal(2, 5), class = Intercept),
+                               prior(normal(10, 5), class = sigma),
+                               ## taus in our model
+                               prior(normal(0, 2), class = sd),
+                               prior(lkj(4), class =cor)),
+                     warmup = 2000,
+                     iter = 20000,
+                     control = list(adapt_delta = 0.9),
+                     save_all_pars = TRUE,
+                     data = eeg_data)
+```
+```{r, echo= FALSE}
+if(!file.exists("m_N400_h_null.RDS")){
+  saveRDS(m_N400_h_null,"m_N400_h_null.RDS")
+} else {
+  m_N400_h_null <- readRDS("m_N400_h_null.RDS")
+}
+```
+
+-----
+  
+  \tiny
+
+```{r}
+m_N400_h_null
+```
+
+----
+  
+  Now we are ready to compute log marginal likelihood via bridge sampling for both models:
+  \footnotesize
+\vspace{1cm}
+```{r, eval = any(!file.exists("lml_linear.RDS", "lml_null.RDS"))}
+lml_linear <- bridge_sampler(m_N400_h_linear, silent = TRUE)
+lml_null <- bridge_sampler(m_N400_h_null, silent = TRUE)
+```
+
+```{r, echo= FALSE}
+if(!file.exists("lml_linear.RDS")){
+  saveRDS(lml_linear,"lml_linear.RDS")
+} else {
+  lml_linear <- readRDS("lml_linear.RDS")
+}
+if(!file.exists("lml_null.RDS")){
+  saveRDS(lml_null,"lml_null.RDS")
+} else {
+  lml_null <- readRDS("lml_null.RDS")
+}
+```
+-----
+  
+  The `bayes_factor`  is  a convenient function to calculate the Bayes factor. 
+
+\small
+\vspace{1cm}
+```{r}
+(BF_ln <- bayes_factor(lml_linear, lml_null))
+```
+\vspace{2cm}
+But it can be done like this as well: 
+  
+  `BF_ln <- exp(lml_linear$logml- lml_null$logml)`.
+
+## About choosing good priors
+
+But what happens if we are have no clue about a good prior for $\beta$?
+  
+  * We might be comparing the null model with a very "bad" alternative model. See Uri Simonsohn's  criticism of Bayes factors https://datacolada.org/78a).
+
+## About choosing good priors
+
+How to overcome this? 
+
+* learn about the effect size that we are investigating by first running an exploratory analysis without Bayes factor, and use the information of the first experiment to calibrate the priors for the next confirmatory experiment. See @verhagenBayesianTestsQuantify2014 for a Bayes Factor test calibrated to investigate  replication success.
+
+
+* Examine all (or a lot of) the possible alternative models, using a sensitivity analysis; recall that the model is the likelihood *and* the priors.
+
+##  Bayes factor for several models
+\small
+(This will take a very long time)
+\vspace{.3cm}
+\tiny
+
+```{r , eval = !file.exists("BFs.RDS")}
+prior_sd <- c(1, 1.5, 2,2.5, 5, 8, 10, 20, 40, 50)
+## prior_sd <- c(1, 2, 5, 8, 20)
+BFs <- map_dfr(prior_sd, function(psd) {
+    gc()
+    fit <- brm(n400 ~ cscloze +
+                   (cscloze | subject) +
+                   (cscloze | item),
+               prior =
+                 c(prior(normal(2, 5), class = Intercept),
+                   set_prior(paste0("normal(0,",psd ,")"),
+                             class = "b"),
+                   prior(normal(10, 5), class = sigma),
+                   ## taus in our model
+                   prior(normal(0, 2), class = sd),
+                   prior(lkj(4), class =cor)),
+               warmup = 2000,
+               iter = 20000,
+               control = list(adapt_delta = 0.9),
+               save_all_pars = TRUE,
+               data = eeg_data)
+     
+    lml_linear_beta <- bridge_sampler(fit, silent = TRUE)
+    tibble(beta_sd = psd, BF = bayes_factor(lml_linear_beta, lml_null)$bf)
+})
+```
+```{r, echo= FALSE}
+if(!file.exists("BFs.RDS")){
+    saveRDS(BFs,"BFs.RDS")
+} else {
+    BFs <- readRDS("BFs.RDS")
+}
+```
+
+
+----
+
+```{r BFpriors, fig.cap = "Prior sensitivity analysis for the Bayes factor", echo = FALSE}
+breaks <- c(1/50 , 1 / 20, 1 / 10, 1 / 3, 1, 3, 5, 10, 20, 50)
+curve <- as.data.frame(spline(BFs$beta_sd, BFs$BF))
+ggplot(BFs, aes(x = beta_sd, y = BF)) +
+    geom_point(size =2) +
+    ## geom_line(data = curve, aes(x = x, y = y))+
+    geom_line() +
+    geom_hline(yintercept = 1, linetype = "dashed") +
+    ## theme_bw() +
+    scale_x_continuous("Normal prior width (SD)\n") +
+    scale_y_log10("BF01", breaks = breaks, labels = MASS::fractions(breaks)) +
+    coord_cartesian(ylim = c(1 / 100, 100)) +
+    annotate("text", x =30, y= 33, label = "Evidence in favor of one H1", size =5)+
+    annotate("text", x =30, y= 1/33, label = "Evidence in favor of H0", size =5) +
+    theme(axis.text.y = element_text(size = 8)) +
+    ggtitle("Bayes factors")
+```
+
+# Comparison of two different models
+
+## Example: Two different models of the N400 effect
+
+
+It has been argued that the effect of predictability is logarithmic, we might ask ourselves if this is also valid for the N400 effect, and thus how much evidence we have for a logarithmic effect vs a linear effect.
+
+\footnotesize
+
+```{r gitlogcloze, message = FALSE, results= "hide"}
+eeg_data <- eeg_data %>%
+    mutate(clogscloze = log(scloze) - mean(log(scloze)))
+```
+-----
+
+One new problem that arises is that we need to assign equivalent priors to both $\beta$ in the models because they are interpreted differently, and we want to put both models on equal footing.
+
+* When there is a linear relationship, $\beta$ represents the rate of  change  in the N400 average when we compare words with 0 to 1 Cloze probability, 
+* When there is logarithmic relationship,  $\beta$ represents a non-linear effect: the rate of change in the average N400  when we compare words with $exp(-1)=.36..$ probability to $exp(0)=1$, or $exp(-2) =.1353$ probability to $exp(-1) = .36...$
+
+
+One possible solution is to force them to have the same SD:
+\footnotesize
+
+```{r}
+eeg_data <- eeg_data %>%
+    mutate(clogscloze = c(scale(log(scloze)) * sd(cscloze)) )
+```
+
+---
+
+\footnotesize
+
+```{r, message = FALSE, results= "hide", eval = !file.exists("m_N400_h_log.RDS")}
+m_N400_h_log <- brm(n400 ~ clogscloze +
+                        (clogscloze | subject) +
+                        (clogscloze | item),
+                       prior =
+                         c(prior(normal(2, 5), class = Intercept),
+                           prior(normal(0, 5), class = b),
+                           prior(normal(10, 5), class = sigma),
+                           # taus in our model
+                           prior(normal(0, 2), class = sd),
+                           prior(lkj(4), class =cor)),
+                       warmup = 2000,
+                       iter = 20000,
+                       control = list(adapt_delta = 0.9),
+                       save_all_pars = TRUE,
+                    data = eeg_data)
+
+```
+
+```{r, echo= FALSE, results ="hide"}
+if(!file.exists("m_N400_h_log.RDS")){
+  saveRDS(m_N400_h_log,"m_N400_h_log.RDS")
+} else {
+  m_N400_h_log <- readRDS("m_N400_h_log.RDS")
+}
+gc()
+```
+
+----
+
+\tiny
+
+```{r}
+m_N400_h_log
+```
+
+----
+
+We calculate the log-marginal likelihood
+\footnotesize
+
+```{r, eval = !file.exists("lml_log.RDS")}
+lml_log <- bridge_sampler(m_N400_h_log, silent = TRUE)
+```
+
+```{r, echo= FALSE}
+if(!file.exists("lml_log.RDS")){
+    saveRDS(lml_log,"lml_log.RDS")
+} else {
+    lml_log <- readRDS("lml_log.RDS")
+}
+```
+
+\normalsize
+
+And we can compare the models now:
+
+```{r}
+(BF <- bayes_factor(lml_linear, lml_log))
+```
+\vspace{1cm}
+
+We can interpret this more easily as the model with the log Cloze probability being (1/BF) `r round(1/BF[[1]])` more likely than the model with linear Cloze probability.
+
+<!-- We can interpret this more easily as the model with the logarithmic Cloze probability being `r round(1/BF[[1]])` more likely than the model with linear Cloze probability. -->
+
+## Summary
+\small
+* While in reasonably large samples, the posterior distribution is not overly influenced by weakly informative priors, the Bayes factor *is*. 
+* When priors are defined to allow a broad range of values, the result will be a lower marginal likelihood (which in turns influences the Bayes factor, as we saw in the examples above). 
+* The  calculation of the Bayes factor  depends on answering a question about which there may be disagreement among researchers: "What way of assigning probability distributions of effect sizes as predicted by theories would be accepted by protagonists on all sides of a debate?" (Dienes 2011)
+* One of  advantage of the Bayes Factor  is that once the minimal magnitude of an expected effect is agreed upon, evidence can be gathered in favor of the null hypothesis.
+
+
+## Further readings
+\small
+* Fabian Dablander's blog post https://fabiandablander.com/r/Law-of-Practice.html for a comparison between Bayes factor and leave-one-out (loo) cross validation
+* For a Bayes Factor Test calibrated to investigate  replication success, see @verhagenBayesianTestsQuantify2014.
+* Chapter 7 of @Gelman14 
+* For a discussion about the advantages and disadvantages of (leave-one-out) cross-validation, see @gronauLimitationsBayesianLeaveOneOut2018, @vehtariLimitationsLimitationsBayesian2019 and @gronauRejoinderMoreLimitations.
+
+----
+  
+  * Interesting read about when cross-validation can be applied: https://statmodeling.stat.columbia.edu/2018/08/03/loo-cross-validation-approaches-valid/
+  * Against null hypothesis testing with BF: https://statmodeling.stat.columbia.edu/2019/09/10/i-hate-bayes-factors-when-theyre-used-for-null-hypothesis-significance-testing/
+  * In favor of null hypothesis testing with BF as an approximation (but assuming realistic effects): https://statmodeling.stat.columbia.edu/2018/03/10/incorporating-bayes-factor-understanding-scientific-information-replication-crisis/
+  
+  
+## References
+  

@@ -197,11 +197,11 @@ In the EEG literature, it has been shown that words with low-predictability are 
 
 \begin{figure}
 
-{\centering \includegraphics[width=0.8\linewidth]{cc_figure/N400noun-1} 
+{\centering \includegraphics[width=0.8\linewidth,height=0.7\textheight]{cc_figure/N400noun-1} 
 
 }
 
-\caption{(ref:mot)}\label{fig:mot}
+\caption{Typical ERP for the grand average across the N400 spatial window (central parietal electrodes: Cz, CP1, CP2, P3, Pz, P4, POz) for high and low predictability nouns (specifically from the constraining context of the experiment reported in Nicenboim, Vasishth, and Rösler 2020). The x-axis indicates time in seconds and the y-axis indicates voltage in microvolts (note that unlike many EEG/ERP plots, the negative polarity is plotted downwards). }\label{fig:mot}
 \end{figure}
 
 \normalsize
@@ -1015,7 +1015,7 @@ Let's see how we need to set up the priors:
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{# parnames(m_N400_v)}
-\NormalTok{ind_effects_v <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(}\StringTok{"r_subject["}\NormalTok{, }\KeywordTok{unique}\NormalTok{(eeg_data}\OperatorTok{$}\NormalTok{subject), }\StringTok{",ccloze]"}\NormalTok{)}
+\NormalTok{ind_effects_v <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(}\StringTok{"r_subject["}\NormalTok{, }\KeywordTok{unique}\NormalTok{(eeg_data}\OperatorTok{$}\NormalTok{subject), }\StringTok{",c_cloze]"}\NormalTok{)}
 \KeywordTok{mcmc_intervals}\NormalTok{(fit_N400_v,}
   \DataTypeTok{pars =}\NormalTok{ ind_effects_v,}
   \DataTypeTok{prob =} \FloatTok{0.8}\NormalTok{,}

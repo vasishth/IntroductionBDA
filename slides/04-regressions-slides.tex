@@ -154,7 +154,7 @@
 
 \title{Bayesian regression models}
 \author{Bruno Nicenboim / Shravan Vasishth}
-\date{2020-03-13}
+\date{2020-03-14}
 
 \begin{document}
 \frame{\titlepage}
@@ -469,12 +469,12 @@ We don't really know if the attentional load will increase or even decrease the 
 ## 
 ## Population-Level Effects: 
 ##           Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-## Intercept   701.14     20.18   661.93   740.64 1.00     3466     2757
-## c_load       33.82     11.99     9.64    57.47 1.00     3275     2554
+## Intercept   701.53     20.10   662.27   742.58 1.00     3702     2751
+## c_load       33.80     11.73    10.84    56.84 1.00     4126     2779
 ## 
 ## Family Specific Parameters: 
 ##       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
-## sigma   128.34     15.09   102.52   162.28 1.00     3211     2925
+## sigma   128.45     15.29   102.54   161.65 1.00     3066     2814
 ## 
 ## Samples were drawn using sampling(NUTS). For each parameter, Bulk_ESS
 ## and Tail_ESS are effective sample size measures, and Rhat is the potential
@@ -508,7 +508,7 @@ We'll need to examine what happens with \(\beta\) (\texttt{c\_load}):
 \begin{itemize}
 \tightlist
 \item
-  The most likely values of \(\beta\) will be around the mean of the posterior, 33.82, and we can be 95\% certain that the true value of \(\beta\) \emph{given the model and the data} lies between 9.64 and 57.47.
+  The most likely values of \(\beta\) will be around the mean of the posterior, 33.8, and we can be 95\% certain that the true value of \(\beta\) \emph{given the model and the data} lies between 10.84 and 56.84.
 \item
   We see that as the attentional load increases, the pupil size of the participant becomes larger.
 \end{itemize}
@@ -945,10 +945,10 @@ Prior selection might look daunting and a lot of work. However\ldots{}
 
 \begin{verbatim}
 ##                Estimate       Q2.5       Q97.5
-## b_Intercept     5.11828     5.1057     5.13111
+## b_Intercept     5.11844     5.1058     5.13064
 ## b_c_trial       0.00052     0.0004     0.00065
-## sigma           0.12332     0.1147     0.13313
-## lp__        -1603.73055 -1607.1320 -1602.28528
+## sigma           0.12330     0.1147     0.13295
+## lp__        -1603.65601 -1606.7664 -1602.27805
 \end{verbatim}
 
 \normalsize
@@ -1009,7 +1009,7 @@ We calculate an estimate if we consider the difference between reaction times in
 
 \begin{verbatim}
 ##  mean  2.5%   98% 
-## 0.087 0.066 0.108
+## 0.087 0.067 0.109
 \end{verbatim}
 
 \normalsize
@@ -1035,7 +1035,7 @@ Alternatively we consider the difference between the second trial and the first 
 
 \begin{verbatim}
 ##  mean  2.5%   98% 
-## 0.079 0.062 0.096
+## 0.080 0.062 0.097
 \end{verbatim}
 
 \normalsize
@@ -1056,7 +1056,7 @@ There is a slowdown in both cases.
 \item
   assess if the observed estimates are consistent with the prediction from our theory;
 \item
-  assess the practical relevance of the effect for the research question; (only after 100 button presses we see a slowdown of 9 ms on average (\(0.09 \cdot 100\)), with a 95\% credible interval ranging from 6.61 to 10.81);
+  assess the practical relevance of the effect for the research question; (only after 100 button presses we see a slowdown of 9 ms on average (\(0.09 \cdot 100\)), with a 95\% credible interval ranging from 6.7 to 10.86);
 \item
   establish the presence or absence of an effect (Bayes factor)
 \end{itemize}
@@ -1080,17 +1080,22 @@ There is a slowdown in both cases.
 \hypertarget{sec:logistic}{%
 \section{Logistic regression: Does set size affect free recall?}\label{sec:logistic}}
 
+\begin{frame}
+
 We'll look at the capacity limit of working memory to illustrate one special case of GLMs, logistic regression.
 
-We'll use a subset of the data of Oberauer (2019):
+Subset of the data of Oberauer (2019):
+
 \textbf{Data}
-One participants recall success (1 success, 0 failure**
+One participants recall success (1 success, 0 failure)
 
 \textbf{Task:}
 word lists of varying lengths (2, 4, 6, and 8 elements** were presented, and the participant was asked to recall a word given its position on the list
 
 \textbf{Research question:}
 How does the number of items to be held in working memory affects recall accuracy?
+
+\end{frame}
 
 \begin{frame}
 
@@ -1099,9 +1104,7 @@ How does the number of items to be held in working memory affects recall accurac
 \small
 
 \begin{figure}
-\centering
-\includegraphics{cc_figure/fig1_oberauer_2019_modified.png}
-\caption{\label{fig:oberauer}Flow of events in a trial with memory set size 4 and free recall. Adapted from Oberauer (2019); licensed under CC BY 4.0.}
+\includegraphics[width=8.89in]{cc_figure/fig1_oberauer_2019_modified} \caption{Flow of events in a trial with memory set size 4 and free recall. Adapted from Oberauer (2019); licensed under CC BY 4.0.}\label{fig:oberauer}
 \end{figure}
 
 \normalsize
@@ -1200,7 +1203,7 @@ How does the number of items to be held in working memory affects recall accurac
 \begin{frame}[fragile]{The likelihood for the logistic regression model}
 \protect\hypertarget{the-likelihood-for-the-logistic-regression-model}{}
 
-Recall that the Bernoulli likelihood generates a 0 or 1 response with a particular probability \(\theta\). For example, one can generate simulated data for 10 trials, with 50\% chances of getting a one as follows:
+Recall that the Bernoulli likelihood generates a 0 or 1 response with a particular probability \(\theta\) (here N = 10 trials with 50\% chances of getting a one):
 
 \small
 
@@ -1296,7 +1299,7 @@ correct_n \sim Bernoulli(\theta_n)
 \begin{itemize}
 \tightlist
 \item
-  \(\alpha\) represents the \emph{log-odds} of correctly recalling one word in a random position for the average set size of five (because we centered the predictor and since \(5 = \frac{2+4+6+8}{4}\)). It depends on how difficult the task is. Let's assume (a 50/50 chance) with a great deal of uncertainty:
+  \(\alpha\) represents the \emph{log-odds} of correctly recalling one word in a random position for the average set size of five (because we centered the predictor and since \(5 = \frac{2+4+6+8}{4}\)). (It's telling us how difficult the task is. Let's assume (a 50/50 chance) with a great deal of uncertainty:
 \end{itemize}
 
 We use \texttt{qlogis(p)} for the inverse logit or logistic function:
@@ -1372,7 +1375,7 @@ We try with:
 \begin{itemize}
 \tightlist
 \item
-  \(\beta\) represents the effect in log-odds of increasing the set size. As a prior, we choose a normal distribution centered on zero (= no any commitment regarding the direction of the effect). But how much uncertainty? We'll testing the following distributions as priors:
+  \(\beta\) represents the effect in log-odds of increasing the set size.
 \end{itemize}
 
 \begin{enumerate}
@@ -1412,9 +1415,7 @@ Edited version of the earlier \texttt{normal\_predictive\_distribution\_fast}:
                                         \CommentTok{# change the likelihood: }
                                         \CommentTok{# Notice the use of a link function for alpha and beta}
                         \DataTypeTok{theta =} \KeywordTok{plogis}\NormalTok{(alpha }\OperatorTok{+}\StringTok{ }\NormalTok{c_set_size }\OperatorTok{*}\StringTok{ }\NormalTok{beta),}
-                                        \CommentTok{# There is no bernoulli in R, but we can just use}
-                                        \CommentTok{# binomial when the total number of trials is 1}
-                        \DataTypeTok{correct_pred =} \KeywordTok{rbinom}\NormalTok{(N_obs, }\DataTypeTok{size =} \DecValTok{1}\NormalTok{, }\DataTypeTok{prob =}\NormalTok{ theta))}
+                        \DataTypeTok{correct_pred =} \KeywordTok{rbernoulli}\NormalTok{(N_obs,  }\DataTypeTok{p =}\NormalTok{ theta))}
 \NormalTok{             \}, }\DataTypeTok{.id =} \StringTok{"iter"}\NormalTok{) }\OperatorTok{%>%}
 \StringTok{    }\CommentTok{# .id is always a string and needs to be converted to a number}
 \StringTok{        }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{iter =} \KeywordTok{as.numeric}\NormalTok{(iter))}
@@ -1535,11 +1536,11 @@ And we calculate the accuracy for each one of the priors we want to examine, for
 ## # Groups:   iter, prior_beta_sd [5,000]
 ##   prior_beta_sd  iter set_size accuracy prior            diffaccuracy
 ##           <dbl> <dbl>    <dbl>    <dbl> <chr>                   <dbl>
-## 1         0.001     1        4     0.27 Normal(0, 0.001)       0.015 
-## 2         0.001     2        4     0.42 Normal(0, 0.001)      -0.015 
-## 3         0.001     3        4     0.32 Normal(0, 0.001)      -0.0400
-## 4         0.001     4        4     0.78 Normal(0, 0.001)      -0.03  
-## 5         0.001     5        4     0.91 Normal(0, 0.001)      -0.0400
+## 1         0.001     1        4    0.27  Normal(0, 0.001)       0.015 
+## 2         0.001     2        4    0.42  Normal(0, 0.001)      -0.015 
+## 3         0.001     3        4    0.32  Normal(0, 0.001)      -0.0400
+## 4         0.001     4        4    0.825 Normal(0, 0.001)       0.0650
+## 5         0.001     5        4    0.94  Normal(0, 0.001)      -0.01  
 ##   diffsize
 ##   <chr>   
 ## 1 4 - 2   
@@ -1578,7 +1579,7 @@ And we calculate the accuracy for each one of the priors we want to examine, for
 \begin{equation}
 \begin{aligned}
 \alpha &\sim Normal(0, 1.5) \\
-\beta &\sim Normal(0, 0.5) 
+\beta &\sim Normal(0, 0.1) 
 \end{aligned}
 \end{equation}
 
@@ -1596,7 +1597,7 @@ And we calculate the accuracy for each one of the priors we want to examine, for
   \DataTypeTok{family =} \KeywordTok{bernoulli}\NormalTok{(}\DataTypeTok{link =}\NormalTok{ logit),}
   \DataTypeTok{prior =} \KeywordTok{c}\NormalTok{(}
     \KeywordTok{prior}\NormalTok{(}\KeywordTok{normal}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{1.5}\NormalTok{), }\DataTypeTok{class =}\NormalTok{ Intercept),}
-    \KeywordTok{prior}\NormalTok{(}\KeywordTok{normal}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{.5}\NormalTok{), }\DataTypeTok{class =}\NormalTok{ b, }\DataTypeTok{coef =}\NormalTok{ c_set_size)}
+    \KeywordTok{prior}\NormalTok{(}\KeywordTok{normal}\NormalTok{(}\DecValTok{0}\NormalTok{, }\FloatTok{.1}\NormalTok{), }\DataTypeTok{class =}\NormalTok{ b, }\DataTypeTok{coef =}\NormalTok{ c_set_size)}
 \NormalTok{  )}
 \NormalTok{)}
 \end{Highlighting}
@@ -1617,9 +1618,9 @@ And we calculate the accuracy for each one of the priors we want to examine, for
 \end{Shaded}
 
 \begin{verbatim}
-##              Estimate Est.Error Q2.5 Q97.5
-## b_Intercept      2.49      0.45  1.7  3.44
-## b_c_set_size    -0.63      0.19 -1.0 -0.29
+##              Estimate Est.Error  Q2.5  Q97.5
+## b_Intercept      1.92     0.298  1.36  2.524
+## b_c_set_size    -0.18     0.081 -0.34 -0.028
 \end{verbatim}
 
 \normalsize
@@ -1642,18 +1643,29 @@ And we calculate the accuracy for each one of the priors we want to examine, for
 
 \end{frame}
 
-\begin{frame}[fragile]{How to communicate the results?}
+\begin{frame}{How to communicate the results?}
 \protect\hypertarget{how-to-communicate-the-results-3}{}
 
 \small
 
 \normalsize
 
-We are here in a situation analogous as before with the log-normal model. If we want to talk about the effect estimated by the model in log-odds space, we summarize the posterior of \(\beta\) in the following way: \(\hat\beta = -0.63\), 95\% CrI = \([ -1.01 , -0.29 ]\).
+If we want to talk about the effect estimated by the model in log-odds space, we summarize the posterior of \(\beta\) in the following way:
 
-However, the effect might be easier to understand in proportions rather than in log-odds. Let's look at the average accuracy for the task first:
+\begin{itemize}
+\tightlist
+\item
+  \(\hat\beta = -0.18\), 95\% CrI = \([ -0.34 , -0.03 ]\).
+\end{itemize}
 
-\small
+\end{frame}
+
+\begin{frame}[fragile]{Effect in proportions}
+\protect\hypertarget{effect-in-proportions}{}
+
+Average accuracy for the task:
+
+\scriptsize
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1665,14 +1677,17 @@ However, the effect might be easier to understand in proportions rather than in 
 
 \begin{verbatim}
 ## mean 2.5%  98% 
-## 0.92 0.84 0.97
+## 0.87 0.80 0.93
 \end{verbatim}
 
 \normalsize
 
-As before, to transform the effect of our manipulation to an easier to interpret scale (i.e., proportion), we need to take into account that the scale is not linear, and that the effect of increasing the set size depends on the average accuracy, and the set size that we start from.
+\end{frame}
 
-We can do the following calculation, similar to what we did for the trial effects experiment, to find out the decrease in accuracy in proportions or probability scale:
+\begin{frame}[fragile]{Effect in proportions}
+\protect\hypertarget{effect-in-proportions-1}{}
+
+Effect of our manipulation
 
 \small
 
@@ -1686,12 +1701,23 @@ We can do the following calculation, similar to what we did for the trial effect
 
 \begin{verbatim}
 ##   mean   2.5%    98% 
-## -0.034 -0.055 -0.017
+## -0.019 -0.037 -0.003
 \end{verbatim}
 
 \normalsize
 
-Notice the interpretation here, if we increase the set size from the average set size minus one to the average set size, we get a reduction in the accuracy of recall of \(-0.03\), 95\% CrI = \([ -0.05 , -0.02 ]\). Recall that the average set size, 5, was not presented to the subject! We could also look at the decrease in accuracy from a set size of 2 to 4:
+Notice the interpretation here:
+
+\emph{if we increase the set size from the average set size minus one to the average set size (5), we get a reduction in the accuracy of recall of \(-0.02\), 95\% CrI = \([ -0.04 , 0 ]\).}
+
+\end{frame}
+
+\begin{frame}[fragile]{Effect in proportions}
+\protect\hypertarget{effect-in-proportions-2}{}
+
+Recall that the average set size, 5, was not presented to the subject!
+
+Decrease in accuracy from a set size of 2 to 4:
 
 \small
 
@@ -1704,8 +1730,8 @@ Notice the interpretation here, if we increase the set size from the average set
 \end{Shaded}
 
 \begin{verbatim}
-##   mean   2.5%    98% 
-## -0.031 -0.058 -0.010
+##    mean    2.5%     98% 
+## -0.0295 -0.0540 -0.0057
 \end{verbatim}
 
 \normalsize
@@ -1714,12 +1740,23 @@ We see that increasing the set size does have a detrimental effect in recall, as
 
 \end{frame}
 
-\begin{frame}[fragile]{Descriptive adequacy}
+\begin{frame}{Descriptive adequacy}
 \protect\hypertarget{descriptive-adequacy}{}
 
-One potentially useful aspect of posterior distributions is that we could also make predictions for other conditions not presented in the actual experiment, such as set sizes that weren't tested. We could then verify if our model was right with another experiment. To make predictions for other set sizes, we extend our dataset adding rows with set sizes of 3, 5, and 7. To be consistent with the data of the other set sizes in the experiment, we add 23 trials of each new set size (this is the number of trial by set sizes in the dataset). Something important to notice is that \textbf{we need to center our predictor based on the original mean set size}. This is because we want to maintain our interpretation of the intercept. We extend the data as follows, and we summarize the data and plot it in Figure \ref{fig:postpredsum2}.
+We could also make predictions for other conditions not presented in the actual experiment, such as set sizes that weren't tested:
 
-\small
+\begin{itemize}
+\item
+  We extend our dataset adding rows with set sizes of 3, 5, and 7: we add 23 trials of each new set size
+\item
+  Notice is that \textbf{we need to center our predictor based on the original mean set size}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\scriptsize
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1743,19 +1780,70 @@ One potentially useful aspect of posterior distributions is that we could also m
 
 \normalsize
 
+\end{frame}
 
+\begin{frame}[fragile]
 
-\small
+\scriptsize
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{df_recall_pred_ext_summary <-}\StringTok{ }\NormalTok{df_recall_pred_ext }\OperatorTok{%>%}
+\NormalTok{(df_recall_pred_ext_summary <-}\StringTok{ }\NormalTok{df_recall_pred_ext }\OperatorTok{%>%}
 \StringTok{  }\KeywordTok{group_by}\NormalTok{(iter, set_size) }\OperatorTok{%>%}
-\StringTok{  }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{accuracy =} \KeywordTok{mean}\NormalTok{(correct))}
+\StringTok{  }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{accuracy =} \KeywordTok{mean}\NormalTok{(correct)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 7,000 x 3
+## # Groups:   iter [1,000]
+##    iter set_size accuracy
+##   <dbl>    <dbl>    <dbl>
+## 1     1        2    0.826
+## 2     1        3    0.913
+## 3     1        4    0.957
+## 4     1        5    1    
+## 5     1        6    0.826
+## # ... with 6,995 more rows
+\end{verbatim}
+
+\normalsize
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\scriptsize
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \CommentTok{# observed means:}
-\NormalTok{df_recall_summary <-}\StringTok{ }\NormalTok{df_recall_data }\OperatorTok{%>%}
+\NormalTok{(df_recall_summary <-}\StringTok{ }\NormalTok{df_recall_data }\OperatorTok{%>%}
 \StringTok{  }\KeywordTok{group_by}\NormalTok{(set_size) }\OperatorTok{%>%}
-\StringTok{  }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{accuracy =} \KeywordTok{mean}\NormalTok{(correct))}
+\StringTok{  }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{accuracy =} \KeywordTok{mean}\NormalTok{(correct)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 4 x 2
+##   set_size accuracy
+##      <dbl>    <dbl>
+## 1        2    1    
+## 2        4    0.957
+## 3        6    0.913
+## 4        8    0.609
+\end{verbatim}
+
+\normalsize
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\scriptsize
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \KeywordTok{ggplot}\NormalTok{(df_recall_pred_ext_summary, }\KeywordTok{aes}\NormalTok{(accuracy)) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_histogram}\NormalTok{(}\DataTypeTok{alpha =} \FloatTok{.5}\NormalTok{) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_vline}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{xintercept =}\NormalTok{ accuracy), }\DataTypeTok{data =}\NormalTok{ df_recall_summary) }\OperatorTok{+}
@@ -1763,11 +1851,7 @@ One potentially useful aspect of posterior distributions is that we could also m
 \end{Highlighting}
 \end{Shaded}
 
-\begin{figure}
-\centering
 \includegraphics{04-regressions-slides_files/figure-beamer/postpredsum2-1.pdf}
-\caption{\label{fig:postpredsum2}Distribution of posterior predicted mean accuracies in gray for tested set sizes (2, 4, 6, and 8) and untested ones (3, 5, and 7), and observed mean accuracy in black lines by tested set sizes.}
-\end{figure}
 
 \normalsize
 

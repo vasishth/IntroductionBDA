@@ -649,11 +649,14 @@ There is a slowdown in both cases.
 
 # Logistic regression: Does set size affect free recall? {#sec:logistic}
 
+---
+
 We'll look at the capacity limit of working memory to illustrate one special case of GLMs, logistic regression.
 
-We'll use a subset of the data of @oberauerWorkingMemoryCapacity2019:
+Subset of the data of @oberauerWorkingMemoryCapacity2019:
+
 **Data**
-One participants recall success (1 success, 0 failure**
+One participants recall success (1 success, 0 failure)
 
 **Task:**
 word lists of varying lengths (2, 4, 6, and 8 elements** were presented, and the participant was asked to recall a word given its position on the list
@@ -710,7 +713,7 @@ df_recall_data
 
 ## The likelihood for the logistic regression model
 
-Recall that the Bernoulli likelihood generates a 0 or 1 response with a particular probability $\theta$. For example, one can generate simulated data for 10 trials, with 50% chances of getting a one as follows:
+Recall that the Bernoulli likelihood generates a 0 or 1 response with a particular probability $\theta$ (here N = 10 trials with 50% chances of getting a one):
 
 ```{r}
 # We use as.numeric to get zeros and ones rather than FALSE and TRUE
@@ -801,7 +804,7 @@ correct_n \sim Bernoulli(\theta_n)
 
 <!-- Now we need to set priors for $\alpha$ and $\beta$.  -->
 
-- $\alpha$ represents the *log-odds* of correctly recalling one word in a random position for the average set size of five (because we centered the predictor and since $5 = \frac{2+4+6+8}{4}$). It depends on how difficult the task is. Let's assume (a 50/50 chance) with a great deal of uncertainty:
+- $\alpha$ represents the *log-odds* of correctly recalling one word in a random position for the average set size of five (because we centered the predictor and since $5 = \frac{2+4+6+8}{4}$). (It's telling us  how difficult the task is. Let's assume (a 50/50 chance) with a great deal of uncertainty:
  <!-- which, incidentally, was not presented in the experiment. -->
  <!-- This is  one case where the intercept doesn't have a clear interpretation if we leave the prediction uncentered: With non-centered set size, the intercept will be the probability of recalling one word in a set of *zero* words.  -->
 
@@ -859,7 +862,7 @@ ggplot(samples_prob, aes(p)) +
 
 ## Prior for $\beta$
 
-* $\beta$ represents the effect in log-odds of increasing the set size. As a prior, we  choose a normal distribution centered on zero (= no any commitment regarding the direction of the effect). But how much uncertainty? We'll testing the following distributions as priors:
+* $\beta$ represents the effect in log-odds of increasing the set size. 
 
 (a) $\beta \sim Normal(0, 1)$
 (b) $\beta \sim Normal(0, .5)$
@@ -884,9 +887,7 @@ logistic_model_pred <- function(alpha_samples,
                                         # change the likelihood: 
                                         # Notice the use of a link function for alpha and beta
                         theta = plogis(alpha + c_set_size * beta),
-                                        # There is no bernoulli in R, but we can just use
-                                        # binomial when the total number of trials is 1
-                        correct_pred = rbinom(N_obs, size = 1, prob = theta))
+                        correct_pred = rbernoulli(N_obs,  p = theta))
              }, .id = "iter") %>%
     # .id is always a string and needs to be converted to a number
         mutate(iter = as.numeric(iter))
@@ -969,7 +970,7 @@ diff_accuracy %>%
 \begin{equation}
 \begin{aligned}
 \alpha &\sim Normal(0, 1.5) \\
-\beta &\sim Normal(0, 0.5) 
+\beta &\sim Normal(0, 0.1) 
 \end{aligned}
 \end{equation}
 
@@ -985,7 +986,7 @@ fit_recall <- brm(correct ~ 1 + c_set_size,
   family = bernoulli(link = logit),
   prior = c(
     prior(normal(0, 1.5), class = Intercept),
-    prior(normal(0, .5), class = b, coef = c_set_size)
+    prior(normal(0, .1), class = b, coef = c_set_size)
   )
 )
 ```
@@ -1019,19 +1020,28 @@ beta_low <- round(quantile(beta_samples,prob=0.025),5)
 beta_high <- round(quantile(beta_samples,prob=0.975),5)
 ```
 
-We are here in a situation analogous as before with the log-normal model. If we want to talk about the effect estimated by the model in log-odds space, we summarize the posterior of $\beta$ in the following way: $\hat\beta = `r mean(beta_samples)`$, 95% CrI = $[ `r beta_low` , `r beta_high` ]$.
+If we want to talk about the effect estimated by the model in log-odds space, we summarize the posterior of $\beta$ in the following way: 
 
-However, the effect might be easier to understand in proportions rather than in log-odds.  Let's look at the average accuracy for the task first:
+- $\hat\beta = `r mean(beta_samples)`$, 95% CrI = $[ `r beta_low` , `r beta_high` ]$.
 
-```{r}
+## Effect in proportions
+
+<!-- However, the effect might be easier to understand in proportions rather than in log-odds.   -->
+
+Average accuracy for the task:
+
+```{r, size = "scriptsize"}
 alpha_samples<- posterior_samples(fit_recall)$b_Intercept
 av_accuracy <- plogis(alpha_samples)
 c(mean = mean(av_accuracy), quantile(av_accuracy, c(.025,.975)))
 ```
 
-As before, to transform the effect of our manipulation to an easier to interpret scale (i.e., proportion), we need to take  into account that the scale is not linear, and that the effect of increasing the set size depends on the average accuracy, and the set size that we start from.
+## Effect in proportions
+ 
+Effect of our manipulation
 
-We can do the following calculation, similar to what we did for the trial effects experiment, to find out the decrease in accuracy in proportions or probability scale:
+  <!-- - the scale is not linear -->
+  <!-- - the effect of increasing the set size depends on the average accuracy, and the set size that we start from. -->
 
 ```{r}
 beta_samples<- posterior_samples(fit_recall)$b_c_set_size
@@ -1039,7 +1049,15 @@ effect_middle <- plogis(alpha_samples) - plogis(alpha_samples - beta_samples)
 c(mean = mean(effect_middle), quantile(effect_middle, c(.025,.975)))
 ```
 
-Notice the interpretation here, if we increase the set size from the average set size minus one to the average set size, we get a reduction in the accuracy of recall of $`r mean(effect_middle)`$, 95% CrI = $[ `r quantile(effect_middle, .025)` , `r quantile(effect_middle, .975)` ]$. Recall that the average set size, 5, was not presented to the subject! We could also look at the decrease in accuracy from a set size of 2 to 4:
+Notice the interpretation here: 
+
+*if we increase the set size from the average set size minus one to the average set size (5), we get a reduction in the accuracy of recall of $`r mean(effect_middle)`$, 95% CrI = $[ `r quantile(effect_middle, .025)` , `r quantile(effect_middle, .975)` ]$.* 
+
+## Effect in proportions
+
+Recall that the average set size, 5, was not presented to the subject! 
+
+Decrease in accuracy from a set size of 2 to 4:
 
 
 ```{r}
@@ -1052,10 +1070,19 @@ We see that increasing the set size does have a detrimental effect in recall, as
 
 ## Descriptive adequacy
 
+We could also make predictions for other conditions not presented in the actual experiment, such as set sizes that weren't tested:
 
-One potentially useful aspect of posterior distributions is that we could also make predictions for other conditions not presented in the actual experiment, such as set sizes that weren't tested. We could  then verify if our model was right with another experiment. To make predictions for other set sizes, we extend our dataset adding rows with set sizes of 3, 5, and 7. To be consistent with the data of the other set sizes  in the experiment, we add 23 trials of each new set size (this is the number of trial by set sizes in the dataset). Something important to notice is that **we need to center our predictor based on the original mean set size**. This is because we want to maintain our interpretation of the intercept. We extend the data as follows, and we summarize the data and plot it  in Figure \@ref(fig:postpredsum2).
+<!-- We could  then verify if our model was right with another experiment. To make predictions for other set sizes,  -->
 
-```{r}
+- We extend our dataset adding rows with set sizes of 3, 5, and 7: we add 23 trials of each new set size
+
+- Notice is that **we need to center our predictor based on the original mean set size**
+
+<!-- To be consistent with the data of the other set sizes  in the experiment, we add 23 trials of each new set size (this is the number of trial by set sizes in the dataset). Something important to notice is that **we need to center our predictor based on the original mean set size**. This is because we want to maintain our interpretation of the intercept. We extend the data as follows, and we summarize the data and plot it  in Figure \@ref(fig:postpredsum2). -->
+
+----
+
+```{r, size = "scriptsize"}
 df_recall_data_ext <- df_recall_data %>%
     bind_rows(tibble(set_size = rep(c(3,5,7),23),
                      c_set_size = set_size - mean(df_recall_data$set_size)))
@@ -1070,22 +1097,41 @@ df_recall_pred_ext <- posterior_predict(fit_recall,
     mutate(iter = as.numeric(iter))
 ```
 
+----
 
-(ref:postpredsum2) Distribution of posterior predicted mean accuracies in gray for tested set sizes (2, 4, 6, and 8) and untested ones (3, 5, and 7), and observed mean accuracy in black lines by tested set sizes.
 
-```{r postpredsum2, fig.cap ="(ref:postpredsum2)", message = FALSE}
-df_recall_pred_ext_summary <- df_recall_pred_ext %>%
+
+```{r,  message = FALSE, size = "scriptsize", fig.height = 4}
+(df_recall_pred_ext_summary <- df_recall_pred_ext %>%
     group_by(iter, set_size) %>%
-    summarize(accuracy = mean(correct))
+    summarize(accuracy = mean(correct)))
+```
+
+----
+
+
+```{r,  message = FALSE, size = "scriptsize", fig.height = 4}
 # observed means:
-df_recall_summary<- df_recall_data %>%
+(df_recall_summary<- df_recall_data %>%
     group_by(set_size) %>%
-    summarize(accuracy = mean(correct))
+    summarize(accuracy = mean(correct)))
+```
+
+----
+
+```{r postpredsum2,  message = FALSE, size = "scriptsize", fig.height = 4}
 ggplot(df_recall_pred_ext_summary, aes(accuracy)) +
     geom_histogram(alpha=.5)+
     geom_vline(aes(xintercept= accuracy),data= df_recall_summary)+
     facet_grid(set_size ~ .)
 ```
+
+
+
+<!-- ### \color{blue} Exercises -->
+
+<!-- As with our log-normal dataset, our current dataset includes also a column that indicates the trial number. Could it be that trial has also an effect on the recall accuracy? How would you communicate the new results? How does recall changes from the first to the second trial? How does it change in the last two trials?  -->
+
 
 
 

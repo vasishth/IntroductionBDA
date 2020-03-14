@@ -1,0 +1,908 @@
+\PassOptionsToPackage{unicode=true}{hyperref} % options for packages loaded elsewhere
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[12pt,ignorenonframetext,aspectratio=169]{beamer}
+\usepackage{pgfpages}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsempty
+% Prevent slide breaks in the middle of a paragraph:
+\widowpenalties 1 10000
+\raggedbottom
+\setbeamertemplate{part page}{
+\centering
+\begin{beamercolorbox}[sep=16pt,center]{part title}
+  \usebeamerfont{part title}\insertpart\par
+\end{beamercolorbox}
+}
+\setbeamertemplate{section page}{
+\centering
+\begin{beamercolorbox}[sep=12pt,center]{part title}
+  \usebeamerfont{section title}\insertsection\par
+\end{beamercolorbox}
+}
+\setbeamertemplate{subsection page}{
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{part title}
+  \usebeamerfont{subsection title}\insertsubsection\par
+\end{beamercolorbox}
+}
+\AtBeginPart{
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \ifbibliography
+  \else
+    \frame{\sectionpage}
+  \fi
+}
+\AtBeginSubsection{
+  \frame{\subsectionpage}
+}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provides euro and other symbols
+\else % if luatex or xelatex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+\usetheme[]{metropolis}
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage[]{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\usepackage{hyperref}
+\hypersetup{
+            pdftitle={Model comparison with Bayes factor},
+            pdfauthor={Bruno Nicenboim / Shravan Vasishth},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\newif\ifbibliography
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs}
+\usepackage{caption}
+% These lines are needed to make table captions work with longtable:
+\makeatletter
+\def\fnum@table{\tablename~\thetable}
+\makeatother
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+
+% set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
+  \setbeamercolor{frametitle}{bg=gray}
+  \hypersetup{colorlinks,citecolor=orange,filecolor=red,linkcolor=brown,urlcolor=blue}
+% \setsansfont[BoldFont={FiraSans-Bold.ttf}]{FiraSans-Light.ttf}
+% \setmonofont{FiraMono-Regular.ttf}
+\usepackage[sfdefault]{FiraSans}
+\newcommand{\hideFromPandoc}[1]{#1}
+         \hideFromPandoc{
+             \let\Begin\begin
+             \let\End\end
+         }
+
+\setbeamerfont{caption}{size=\scriptsize}
+
+\title{Model comparison with Bayes factor}
+\author{Bruno Nicenboim / Shravan Vasishth}
+\date{2020-03-14}
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}
+\tableofcontents[hideallsubsections]
+\end{frame}
+\hypertarget{model-comparison}{%
+\section{Model comparison}\label{model-comparison}}
+
+There are two perspectives on model comparison:
+
+\begin{itemize}
+\tightlist
+\item
+  a (prior) predictive perspective based on the Bayes factor using marginal likelihoods
+\item
+  a (posterior) predictive perspective based on cross-validation.
+\end{itemize}
+
+\hypertarget{model-comparison-using-the-bayes-factor}{%
+\section{Model comparison using the Bayes factor}\label{model-comparison-using-the-bayes-factor}}
+
+\begin{frame}{Marginal likelihood}
+\protect\hypertarget{marginal-likelihood}{}
+
+Bayes' rule can be written with reference to a specific statistical model \(\mathcal{M}_1\).
+\begin{equation}
+p(\boldsymbol{\theta} \mid D, \mathcal{M}_1) = \frac{p(\boldsymbol{\theta} \mid \mathcal{M}_1) p(D\mid \boldsymbol{\theta}, \mathcal{M}_1) }{p(D\mid \mathcal{M}_1)}
+\end{equation}
+
+Here D refers to the data and \(\boldsymbol{\theta}\) is a vector of parameters.
+
+\(P(D\mid \mathcal{M}_1)\) is the marginal likelihood, and is a single number that tells you the likelihood of the observed data D given the model \(\mathcal{M}_1\)
+
+The likelihood is evaluated for every possible parameter value, weighted by the prior plausibility and summed together.
+
+\end{frame}
+
+\begin{frame}[fragile]{A simple example:}
+\protect\hypertarget{a-simple-example}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Model 1
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{l1 <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(p) }\KeywordTok{dbinom}\NormalTok{(}\DecValTok{80}\NormalTok{, }\DecValTok{100}\NormalTok{, p) }\OperatorTok{*}\StringTok{ }\KeywordTok{dbeta}\NormalTok{(p, }\DecValTok{4}\NormalTok{, }\DecValTok{2}\NormalTok{)}
+\NormalTok{(ml1 <-}\StringTok{ }\KeywordTok{integrate}\NormalTok{(l1, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{)[[}\DecValTok{1}\NormalTok{]])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.02
+\end{verbatim}
+
+\end{frame}
+
+\begin{frame}[fragile]{A simple example:}
+\protect\hypertarget{a-simple-example-1}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Model 2
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{l2 <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(x, y) \{}
+  \KeywordTok{dbbinom}\NormalTok{(}\DecValTok{80}\NormalTok{, }\DecValTok{100}\NormalTok{, x, y) }\OperatorTok{*}\StringTok{ }\KeywordTok{dlnorm}\NormalTok{(x, }\DecValTok{0}\NormalTok{, }\DecValTok{100}\NormalTok{) }\OperatorTok{*}
+\StringTok{    }\KeywordTok{dlnorm}\NormalTok{(y, }\DecValTok{0}\NormalTok{, }\DecValTok{100}\NormalTok{)}
+\NormalTok{\}}
+\NormalTok{(ml2 <-}\StringTok{ }\NormalTok{rmutil}\OperatorTok{::}\KeywordTok{int2}\NormalTok{(l2, }\DataTypeTok{a =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{), }\DataTypeTok{eps =} \FloatTok{1e-04}\NormalTok{, }\DataTypeTok{max =} \DecValTok{12}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.00000833
+\end{verbatim}
+
+\end{frame}
+
+\begin{frame}[fragile]{A simple example:}
+\protect\hypertarget{a-simple-example-2}{}
+
+\begin{itemize}
+\tightlist
+\item
+  Model 3
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{l3 <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(p) }\KeywordTok{dbinom}\NormalTok{(}\DecValTok{80}\NormalTok{, }\DecValTok{100}\NormalTok{, p) }\OperatorTok{*}\StringTok{ }\KeywordTok{dbeta}\NormalTok{(p, }\DecValTok{1}\NormalTok{, }\DecValTok{1}\NormalTok{)}
+\NormalTok{(ml3 <-}\StringTok{ }\KeywordTok{integrate}\NormalTok{(l3, }\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{)[[}\DecValTok{1}\NormalTok{]])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.0099
+\end{verbatim}
+
+\end{frame}
+
+\begin{frame}{Bayes factor}
+\protect\hypertarget{bayes-factor}{}
+
+\textbf{BF} is a measure of relative evidence, compares the predictive performance of two models, by means of a ratio of marginal likelihoods:
+
+\begin{equation}
+BF_{12} = \frac{P(D\mid \mathcal{M}_1)}{P(D\mid \mathcal{M}_2)}
+\end{equation}
+
+\begin{itemize}
+\item
+  \(BF_{12}\) indicates the extent to which the data are more probable under \(\mathcal{M}_1\) over \(\mathcal{M}_2\), or
+\item
+  which of the two models is more likely to have generated the data, or
+\item
+  the relative evidence that we have for \(\mathcal{M}_1\) over \(\mathcal{M}_2\).
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Bayes factor interpretation}
+\protect\hypertarget{bayes-factor-interpretation}{}
+
+\footnotesize
+
+\begin{longtable}[]{@{}rl@{}}
+\toprule
+\(BF_{12}\) & Interpretation\tabularnewline
+\midrule
+\endhead
+\(>100\) & Extreme evidence for \(\mathcal{M}_1\).\tabularnewline
+\(30-100\) & Very strong evidence for \(\mathcal{M}_1\).\tabularnewline
+\(10-30\) & Strong evidence for \(\mathcal{M}_1\).\tabularnewline
+\(3-10\) & Moderate evidence for \(\mathcal{M}_1\).\tabularnewline
+\(1-3\) & Anecdotal evidence for \(\mathcal{M}_1\).\tabularnewline
+\(1\) & No evidence.\tabularnewline
+\(\frac{1}{1}-\frac{1}{3}\) & Anecdotal evidence for \(\mathcal{M}_2\).\tabularnewline
+\(\frac{1}{3}-\frac{1}{10}\) & Moderate evidence for \(\mathcal{M}_2\).\tabularnewline
+\(\frac{1}{10}-\frac{1}{30}\) & Strong evidence for \(\mathcal{M}_2\).\tabularnewline
+\(\frac{1}{30}-\frac{1}{100}\) & Very strong evidence for \(\mathcal{M}_2\).\tabularnewline
+\(<\frac{1}{100}\) & Extreme evidence for \(\mathcal{M}_2\).\tabularnewline
+\bottomrule
+\end{longtable}
+
+\end{frame}
+
+\begin{frame}
+
+In our previous example, we can calculate \(BF_{12}\), \(BF_{13}\), and \(BF_{23}\). (Notice that \(BF_{21}\) is simply \(\frac{1}{BF_{12}}\)).
+
+\begin{itemize}
+\tightlist
+\item
+  \(BF_{12} = ml1/ml2 = 2399.666\)
+\item
+  \(BF_{13} = ml1/ml3= 2.018\)
+\item
+  \(BF_{23} = ml2/ml3 = 0.001 = \frac{1}{BF_{32}} = \frac{1}{1189.007}\)
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Probability of a model}
+\protect\hypertarget{probability-of-a-model}{}
+
+If we want to know how much more probable model \(\mathcal{M}_1\) than \(\mathcal{M}_2\) is given the data, \(D\), we need the prior odds, how much probable \(\mathcal{M}_1\) is than \(\mathcal{M}_2\) \emph{a priori}.
+
+\begin{align}
+\frac{p(\mathcal{M}_1 \mid D)}{p(\mathcal{M}_2 \mid D)} =& \frac{p(\mathcal{M}_1)}{p(\mathcal{M}_2)} \times \frac{P(D\mid \mathcal{M}_1)}{P(D\mid \mathcal{M}_2)}
+\end{align}
+
+\begin{align}
+\text{Posterior odds}_{12} = & \text{Prior odds}_{12} \times BF_{12}
+\end{align}
+
+The Bayes factor \textbf{only} tells us how much we need to update our relative belief between the two models.
+
+\end{frame}
+
+\begin{frame}{Example: Null hypothesis testing the N400 effect}
+\protect\hypertarget{example-null-hypothesis-testing-the-n400-effect}{}
+
+While we have previously estimated the effect of cloze probability on the N400, estimation cannot really answer a very popular question: \emph{How much evidence we have in support for the effect of cloze probability?}
+
+\vspace{.3cm}
+
+We are going to answer this question with the Bayes factor, by doing model comparison: We'll compare a model that assumes a \emph{certain} effect, with a null model that assumes no effect.
+
+\end{frame}
+
+\begin{frame}
+
+The prior on \(\beta\) will be \textbf{crucial} for the calculation of the Bayes factor.
+
+\small
+
+\begin{enumerate}
+\tightlist
+\item
+  I generally want to be agnostic regarding the direction of the effect: I will center the prior of \(\beta\) on zero.
+\item
+  I would need to know a bit about the variation on the DV that I'm analyzing. I would say that for N400 averages, the standard deviation of the signal is between 8-15 microvolts.
+\item
+  Effects in psycholinguistics are rather small, representing between 5\%-30\% of the SD of the DV.
+\item
+  I know that the effect of noun predictability on the N400 is one the most reliable and strongest effects in neurolinguistics, and \(\beta\) represents the change in average voltage when we move from a cloze probability of zero to one --the strongest prediction effect.
+\end{enumerate}
+
+We will start then with \(\beta \sim Normal(0,5)\) (since 5 microV is 30\% of 15).
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+We are going to ``smooth'' the Cloze probability in this example:
+\vspace{1cm}
+\footnotesize
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{eeg_data <-}\StringTok{ }\KeywordTok{read_tsv}\NormalTok{(}\StringTok{"data/public_noun_data.txt"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{filter}\NormalTok{(lab}\OperatorTok{==}\StringTok{"edin"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{nans =} \KeywordTok{round}\NormalTok{(cloze}\OperatorTok{/}\DecValTok{100} \OperatorTok{*}\DecValTok{20}\NormalTok{),}
+           \DataTypeTok{scloze =}\NormalTok{ (nans }\OperatorTok{+}\StringTok{ }\DecValTok{1}\NormalTok{) }\OperatorTok{/}\StringTok{ }\DecValTok{22}\NormalTok{,}
+           \DataTypeTok{cscloze =}\NormalTok{ scloze }\OperatorTok{-}\StringTok{ }\KeywordTok{mean}\NormalTok{(scloze))}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\footnotesize
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{m_N400_h_linear <-}\StringTok{ }\KeywordTok{brm}\NormalTok{(n400 }\OperatorTok{~}\StringTok{ }\NormalTok{cscloze }\OperatorTok{+}
+\StringTok{                         }\NormalTok{(cscloze }\OperatorTok{|}\StringTok{ }\NormalTok{subject) }\OperatorTok{+}
+\StringTok{                         }\NormalTok{(cscloze }\OperatorTok{|}\StringTok{ }\NormalTok{item),}
+                       \DataTypeTok{prior =} \KeywordTok{c}\NormalTok{(}\KeywordTok{prior}\NormalTok{(}\KeywordTok{normal}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{5}\NormalTok{), }\DataTypeTok{class =}\NormalTok{ Intercept),}
+                                 \KeywordTok{prior}\NormalTok{(}\KeywordTok{normal}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{5}\NormalTok{), }\DataTypeTok{class =}\NormalTok{ b),}
+                                 \KeywordTok{prior}\NormalTok{(}\KeywordTok{normal}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{5}\NormalTok{), }\DataTypeTok{class =}\NormalTok{ sigma),}
+                                 \CommentTok{# taus in our model}
+                                 \KeywordTok{prior}\NormalTok{(}\KeywordTok{normal}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{2}\NormalTok{), }\DataTypeTok{class =}\NormalTok{ sd),}
+                                 \KeywordTok{prior}\NormalTok{(}\KeywordTok{lkj}\NormalTok{(}\DecValTok{4}\NormalTok{), }\DataTypeTok{class =}\NormalTok{cor)),}
+                       \DataTypeTok{warmup =} \DecValTok{2000}\NormalTok{,}
+                       \DataTypeTok{iter =} \DecValTok{20000}\NormalTok{,}
+                       \DataTypeTok{control =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{adapt_delta =} \FloatTok{0.9}\NormalTok{),}
+                       \DataTypeTok{save_all_pars =} \OtherTok{TRUE}\NormalTok{,}
+                       \DataTypeTok{data =}\NormalTok{ eeg_data)}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\tiny
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{m_N400_h_linear}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  Family: gaussian 
+##   Links: mu = identity; sigma = identity 
+## Formula: n400 ~ cscloze + (cscloze | subject) + (cscloze | item) 
+##    Data: eeg_data (Number of observations: 2827) 
+## Samples: 4 chains, each with iter = 20000; warmup = 2000; thin = 1;
+##          total post-warmup samples = 72000
+## 
+## Group-Level Effects: 
+## ~item (Number of levels: 80) 
+##                        Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
+## sd(Intercept)              1.51      0.34     0.82     2.16 1.00    27153
+## sd(cscloze)                1.91      1.02     0.12     3.88 1.00    21533
+## cor(Intercept,cscloze)    -0.26      0.29    -0.74     0.38 1.00    62181
+##                        Tail_ESS
+## sd(Intercept)             35328
+## sd(cscloze)               28485
+## cor(Intercept,cscloze)    53276
+## 
+## ~subject (Number of levels: 37) 
+##                        Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
+## sd(Intercept)              2.16      0.35     1.54     2.91 1.00    30933
+## sd(cscloze)                1.26      0.81     0.06     3.00 1.00    28600
+## cor(Intercept,cscloze)     0.08      0.30    -0.53     0.64 1.00   106208
+##                        Tail_ESS
+## sd(Intercept)             46745
+## sd(cscloze)               40319
+## cor(Intercept,cscloze)    53749
+## 
+## Population-Level Effects: 
+##           Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## Intercept     3.64      0.45     2.75     4.53 1.00    47343    49162
+## cscloze       2.53      0.70     1.14     3.88 1.00    89936    54142
+## 
+## Family Specific Parameters: 
+##       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## sigma    11.51      0.16    11.21    11.83 1.00   101098    52495
+## 
+## Samples were drawn using sampling(NUTS). For each parameter, Bulk_ESS
+## and Tail_ESS are effective sample size measures, and Rhat is the potential
+## scale reduction factor on split chains (at convergence, Rhat = 1).
+\end{verbatim}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+And we'll run our model without the parameter of interest, the null model:
+
+\footnotesize
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{m_N400_h_null <-}\StringTok{ }\KeywordTok{brm}\NormalTok{(n400 }\OperatorTok{~}\StringTok{ }\DecValTok{1} \OperatorTok{+}
+\StringTok{                       }\NormalTok{(cscloze }\OperatorTok{|}\StringTok{ }\NormalTok{subject) }\OperatorTok{+}
+\StringTok{                       }\NormalTok{(cscloze }\OperatorTok{|}\StringTok{ }\NormalTok{item),}
+                     \DataTypeTok{prior =} \KeywordTok{c}\NormalTok{(}\KeywordTok{prior}\NormalTok{(}\KeywordTok{normal}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{5}\NormalTok{), }\DataTypeTok{class =}\NormalTok{ Intercept),}
+                               \KeywordTok{prior}\NormalTok{(}\KeywordTok{normal}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{5}\NormalTok{), }\DataTypeTok{class =}\NormalTok{ sigma),}
+                               \CommentTok{## taus in our model}
+                               \KeywordTok{prior}\NormalTok{(}\KeywordTok{normal}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{2}\NormalTok{), }\DataTypeTok{class =}\NormalTok{ sd),}
+                               \KeywordTok{prior}\NormalTok{(}\KeywordTok{lkj}\NormalTok{(}\DecValTok{4}\NormalTok{), }\DataTypeTok{class =}\NormalTok{cor)),}
+                     \DataTypeTok{warmup =} \DecValTok{2000}\NormalTok{,}
+                     \DataTypeTok{iter =} \DecValTok{20000}\NormalTok{,}
+                     \DataTypeTok{control =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{adapt_delta =} \FloatTok{0.9}\NormalTok{),}
+                     \DataTypeTok{save_all_pars =} \OtherTok{TRUE}\NormalTok{,}
+                     \DataTypeTok{data =}\NormalTok{ eeg_data)}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\tiny
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{m_N400_h_null}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  Family: gaussian 
+##   Links: mu = identity; sigma = identity 
+## Formula: n400 ~ 1 + (cscloze | subject) + (cscloze | item) 
+##    Data: eeg_data (Number of observations: 2827) 
+## Samples: 4 chains, each with iter = 20000; warmup = 2000; thin = 1;
+##          total post-warmup samples = 72000
+## 
+## Group-Level Effects: 
+## ~item (Number of levels: 80) 
+##                        Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
+## sd(Intercept)              1.42      0.35     0.71     2.08 1.00    23430
+## sd(cscloze)                2.92      1.02     0.60     4.76 1.00    18182
+## cor(Intercept,cscloze)    -0.34      0.25    -0.76     0.22 1.00    45534
+##                        Tail_ESS
+## sd(Intercept)             25594
+## sd(cscloze)               18089
+## cor(Intercept,cscloze)    47787
+## 
+## ~subject (Number of levels: 37) 
+##                        Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
+## sd(Intercept)              2.15      0.35     1.54     2.91 1.00    33189
+## sd(cscloze)                1.80      0.97     0.12     3.70 1.00    20586
+## cor(Intercept,cscloze)     0.09      0.28    -0.48     0.62 1.00    87320
+##                        Tail_ESS
+## sd(Intercept)             49814
+## sd(cscloze)               29783
+## cor(Intercept,cscloze)    56711
+## 
+## Population-Level Effects: 
+##           Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## Intercept     3.69      0.47     2.76     4.61 1.00    45035    49964
+## 
+## Family Specific Parameters: 
+##       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## sigma    11.51      0.16    11.20    11.83 1.00   114631    52069
+## 
+## Samples were drawn using sampling(NUTS). For each parameter, Bulk_ESS
+## and Tail_ESS are effective sample size measures, and Rhat is the potential
+## scale reduction factor on split chains (at convergence, Rhat = 1).
+\end{verbatim}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+Now we are ready to compute log marginal likelihood via bridge sampling for both models:
+\footnotesize
+\vspace{1cm}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lml_linear <-}\StringTok{ }\KeywordTok{bridge_sampler}\NormalTok{(m_N400_h_linear, }\DataTypeTok{silent =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{lml_null <-}\StringTok{ }\KeywordTok{bridge_sampler}\NormalTok{(m_N400_h_null, }\DataTypeTok{silent =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+The \texttt{bayes\_factor} is a convenient function to calculate the Bayes factor.
+
+\small
+\vspace{1cm}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(BF_ln <-}\StringTok{ }\KeywordTok{bayes_factor}\NormalTok{(lml_linear, lml_null))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Estimated Bayes factor in favor of x1 over x2: 54.15370
+\end{verbatim}
+
+\vspace{2cm}
+
+But it can be done like this as well:
+
+\texttt{BF\_ln\ \textless{}-\ exp(lml\_linear\$logml-\ lml\_null\$logml)}.
+
+\end{frame}
+
+\begin{frame}{About choosing good priors}
+\protect\hypertarget{about-choosing-good-priors}{}
+
+But what happens if we are have no clue about a good prior for \(\beta\)?
+
+\begin{itemize}
+\tightlist
+\item
+  We might be comparing the null model with a very ``bad'' alternative model. See Uri Simonsohn's criticism of Bayes factors \url{https://datacolada.org/78a}).
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{About choosing good priors}
+\protect\hypertarget{about-choosing-good-priors-1}{}
+
+How to overcome this?
+
+\begin{itemize}
+\item
+  learn about the effect size that we are investigating by first running an exploratory analysis without Bayes factor, and use the information of the first experiment to calibrate the priors for the next confirmatory experiment. See Verhagen and Wagenmakers (2014) for a Bayes Factor test calibrated to investigate replication success.
+\item
+  Examine all (or a lot of) the possible alternative models, using a sensitivity analysis; recall that the model is the likelihood \emph{and} the priors.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Bayes factor for several models}
+\protect\hypertarget{bayes-factor-for-several-models}{}
+
+\small
+
+(This will take a very long time)
+\vspace{.3cm}
+\tiny
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{prior_sd <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\FloatTok{1.5}\NormalTok{, }\DecValTok{2}\NormalTok{, }\FloatTok{2.5}\NormalTok{, }\DecValTok{5}\NormalTok{, }\DecValTok{8}\NormalTok{, }\DecValTok{10}\NormalTok{, }\DecValTok{20}\NormalTok{, }\DecValTok{40}\NormalTok{, }\DecValTok{50}\NormalTok{)}
+\CommentTok{## prior_sd <- c(1, 2, 5, 8, 20)}
+\NormalTok{BFs <-}\StringTok{ }\KeywordTok{map_dfr}\NormalTok{(prior_sd, }\ControlFlowTok{function}\NormalTok{(psd) \{}
+  \KeywordTok{gc}\NormalTok{()}
+\NormalTok{  fit <-}\StringTok{ }\KeywordTok{brm}\NormalTok{(n400 }\OperatorTok{~}\StringTok{ }\NormalTok{cscloze }\OperatorTok{+}
+\StringTok{    }\NormalTok{(cscloze }\OperatorTok{|}\StringTok{ }\NormalTok{subject) }\OperatorTok{+}
+\StringTok{    }\NormalTok{(cscloze }\OperatorTok{|}\StringTok{ }\NormalTok{item),}
+  \DataTypeTok{prior =}
+    \KeywordTok{c}\NormalTok{(}
+      \KeywordTok{prior}\NormalTok{(}\KeywordTok{normal}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{5}\NormalTok{), }\DataTypeTok{class =}\NormalTok{ Intercept),}
+      \KeywordTok{set_prior}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(}\StringTok{"normal(0,"}\NormalTok{, psd, }\StringTok{")"}\NormalTok{),}
+        \DataTypeTok{class =} \StringTok{"b"}
+\NormalTok{      ),}
+      \KeywordTok{prior}\NormalTok{(}\KeywordTok{normal}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{5}\NormalTok{), }\DataTypeTok{class =}\NormalTok{ sigma),}
+      \CommentTok{## taus in our model}
+      \KeywordTok{prior}\NormalTok{(}\KeywordTok{normal}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{2}\NormalTok{), }\DataTypeTok{class =}\NormalTok{ sd),}
+      \KeywordTok{prior}\NormalTok{(}\KeywordTok{lkj}\NormalTok{(}\DecValTok{4}\NormalTok{), }\DataTypeTok{class =}\NormalTok{ cor)}
+\NormalTok{    ),}
+  \DataTypeTok{warmup =} \DecValTok{2000}\NormalTok{,}
+  \DataTypeTok{iter =} \DecValTok{20000}\NormalTok{,}
+  \DataTypeTok{control =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{adapt_delta =} \FloatTok{0.9}\NormalTok{),}
+  \DataTypeTok{save_all_pars =} \OtherTok{TRUE}\NormalTok{,}
+  \DataTypeTok{data =}\NormalTok{ eeg_data}
+\NormalTok{  )}
+
+\NormalTok{  lml_linear_beta <-}\StringTok{ }\KeywordTok{bridge_sampler}\NormalTok{(fit, }\DataTypeTok{silent =} \OtherTok{TRUE}\NormalTok{)}
+  \KeywordTok{tibble}\NormalTok{(}\DataTypeTok{beta_sd =}\NormalTok{ psd, }\DataTypeTok{BF =} \KeywordTok{bayes_factor}\NormalTok{(lml_linear_beta, lml_null)}\OperatorTok{$}\NormalTok{bf)}
+\NormalTok{\})}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}
+
+\begin{figure}
+\centering
+\includegraphics{06-BF-slides_files/figure-beamer/BFpriors-1.pdf}
+\caption{\label{fig:BFpriors}Prior sensitivity analysis for the Bayes factor}
+\end{figure}
+
+\end{frame}
+
+\hypertarget{comparison-of-two-different-models}{%
+\section{Comparison of two different models}\label{comparison-of-two-different-models}}
+
+\begin{frame}[fragile]{Example: Two different models of the N400 effect}
+\protect\hypertarget{example-two-different-models-of-the-n400-effect}{}
+
+It has been argued that the effect of predictability is logarithmic, we might ask ourselves if this is also valid for the N400 effect, and thus how much evidence we have for a logarithmic effect vs a linear effect.
+
+\footnotesize
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{eeg_data <-}\StringTok{ }\NormalTok{eeg_data }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{clogscloze =} \KeywordTok{log}\NormalTok{(scloze) }\OperatorTok{-}\StringTok{ }\KeywordTok{mean}\NormalTok{(}\KeywordTok{log}\NormalTok{(scloze)))}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+One new problem that arises is that we need to assign equivalent priors to both \(\beta\) in the models because they are interpreted differently, and we want to put both models on equal footing.
+
+\begin{itemize}
+\tightlist
+\item
+  When there is a linear relationship, \(\beta\) represents the rate of change in the N400 average when we compare words with 0 to 1 Cloze probability,
+\item
+  When there is logarithmic relationship, \(\beta\) represents a non-linear effect: the rate of change in the average N400 when we compare words with \(exp(-1)=.36..\) probability to \(exp(0)=1\), or \(exp(-2) =.1353\) probability to \(exp(-1) = .36...\)
+\end{itemize}
+
+One possible solution is to force them to have the same SD:
+\footnotesize
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{eeg_data <-}\StringTok{ }\NormalTok{eeg_data }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{clogscloze =} \KeywordTok{c}\NormalTok{(}\KeywordTok{scale}\NormalTok{(}\KeywordTok{log}\NormalTok{(scloze)) }\OperatorTok{*}\StringTok{ }\KeywordTok{sd}\NormalTok{(cscloze)))}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\footnotesize
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{m_N400_h_log <-}\StringTok{ }\KeywordTok{brm}\NormalTok{(n400 }\OperatorTok{~}\StringTok{ }\NormalTok{clogscloze }\OperatorTok{+}
+\StringTok{  }\NormalTok{(clogscloze }\OperatorTok{|}\StringTok{ }\NormalTok{subject) }\OperatorTok{+}
+\StringTok{  }\NormalTok{(clogscloze }\OperatorTok{|}\StringTok{ }\NormalTok{item),}
+\DataTypeTok{prior =}
+  \KeywordTok{c}\NormalTok{(}
+    \KeywordTok{prior}\NormalTok{(}\KeywordTok{normal}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{5}\NormalTok{), }\DataTypeTok{class =}\NormalTok{ Intercept),}
+    \KeywordTok{prior}\NormalTok{(}\KeywordTok{normal}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{5}\NormalTok{), }\DataTypeTok{class =}\NormalTok{ b),}
+    \KeywordTok{prior}\NormalTok{(}\KeywordTok{normal}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{5}\NormalTok{), }\DataTypeTok{class =}\NormalTok{ sigma),}
+    \CommentTok{# taus in our model}
+    \KeywordTok{prior}\NormalTok{(}\KeywordTok{normal}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{2}\NormalTok{), }\DataTypeTok{class =}\NormalTok{ sd),}
+    \KeywordTok{prior}\NormalTok{(}\KeywordTok{lkj}\NormalTok{(}\DecValTok{4}\NormalTok{), }\DataTypeTok{class =}\NormalTok{ cor)}
+\NormalTok{  ),}
+\DataTypeTok{warmup =} \DecValTok{2000}\NormalTok{,}
+\DataTypeTok{iter =} \DecValTok{20000}\NormalTok{,}
+\DataTypeTok{control =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{adapt_delta =} \FloatTok{0.9}\NormalTok{),}
+\DataTypeTok{save_all_pars =} \OtherTok{TRUE}\NormalTok{,}
+\DataTypeTok{data =}\NormalTok{ eeg_data}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+\tiny
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{m_N400_h_log}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  Family: gaussian 
+##   Links: mu = identity; sigma = identity 
+## Formula: n400 ~ clogscloze + (clogscloze | subject) + (clogscloze | item) 
+##    Data: eeg_data (Number of observations: 2827) 
+## Samples: 4 chains, each with iter = 20000; warmup = 2000; thin = 1;
+##          total post-warmup samples = 72000
+## 
+## Group-Level Effects: 
+## ~item (Number of levels: 80) 
+##                           Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
+## sd(Intercept)                 1.52      0.34     0.82     2.17 1.00    23552
+## sd(clogscloze)                1.40      0.88     0.07     3.25 1.00    26927
+## cor(Intercept,clogscloze)    -0.15      0.31    -0.70     0.49 1.00    80968
+##                           Tail_ESS
+## sd(Intercept)                23901
+## sd(clogscloze)               35507
+## cor(Intercept,clogscloze)    54969
+## 
+## ~subject (Number of levels: 37) 
+##                           Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
+## sd(Intercept)                 2.15      0.35     1.53     2.90 1.00    30355
+## sd(clogscloze)                1.27      0.82     0.06     3.03 1.00    26687
+## cor(Intercept,clogscloze)     0.04      0.30    -0.55     0.61 1.00   102306
+##                           Tail_ESS
+## sd(Intercept)                47870
+## sd(clogscloze)               34820
+## cor(Intercept,clogscloze)    51214
+## 
+## Population-Level Effects: 
+##            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## Intercept      3.64      0.45     2.75     4.53 1.00    44071    50269
+## clogscloze     2.86      0.68     1.50     4.19 1.00    95123    55856
+## 
+## Family Specific Parameters: 
+##       Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## sigma    11.52      0.16    11.21    11.83 1.00   101112    54008
+## 
+## Samples were drawn using sampling(NUTS). For each parameter, Bulk_ESS
+## and Tail_ESS are effective sample size measures, and Rhat is the potential
+## scale reduction factor on split chains (at convergence, Rhat = 1).
+\end{verbatim}
+
+\end{frame}
+
+\begin{frame}[fragile]
+
+We calculate the log-marginal likelihood
+\footnotesize
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lml_log <-}\StringTok{ }\KeywordTok{bridge_sampler}\NormalTok{(m_N400_h_log, }\DataTypeTok{silent =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\normalsize
+
+And we can compare the models now:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{(BF <-}\StringTok{ }\KeywordTok{bayes_factor}\NormalTok{(lml_linear, lml_log))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Estimated Bayes factor in favor of x1 over x2: 0.19872
+\end{verbatim}
+
+\vspace{1cm}
+
+We can interpret this more easily as the model with the log Cloze probability being (1/BF) 5 more likely than the model with linear Cloze probability.
+
+\end{frame}
+
+\begin{frame}{Summary}
+\protect\hypertarget{summary}{}
+
+\small
+
+\begin{itemize}
+\tightlist
+\item
+  While in reasonably large samples, the posterior distribution is not overly influenced by weakly informative priors, the Bayes factor \emph{is}.
+\item
+  When priors are defined to allow a broad range of values, the result will be a lower marginal likelihood (which in turns influences the Bayes factor, as we saw in the examples above).
+\item
+  The calculation of the Bayes factor depends on answering a question about which there may be disagreement among researchers: ``What way of assigning probability distributions of effect sizes as predicted by theories would be accepted by protagonists on all sides of a debate?'' (Dienes 2011)
+\item
+  One of advantage of the Bayes Factor is that once the minimal magnitude of an expected effect is agreed upon, evidence can be gathered in favor of the null hypothesis.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Further readings}
+\protect\hypertarget{further-readings}{}
+
+\small
+
+\begin{itemize}
+\tightlist
+\item
+  Fabian Dablander's blog post \url{https://fabiandablander.com/r/Law-of-Practice.html} for a comparison between Bayes factor and leave-one-out (loo) cross validation
+\item
+  For a Bayes Factor Test calibrated to investigate replication success, see Verhagen and Wagenmakers (2014).
+\item
+  Chapter 7 of Gelman et al. (2014)
+\item
+  For a discussion about the advantages and disadvantages of (leave-one-out) cross-validation, see Gronau and Wagenmakers (2018), Vehtari et al. (2019) and Gronau and Wagenmakers (n.d.).
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+
+\begin{itemize}
+\tightlist
+\item
+  Interesting read about when cross-validation can be applied: \url{https://statmodeling.stat.columbia.edu/2018/08/03/loo-cross-validation-approaches-valid/}
+\item
+  Against null hypothesis testing with BF: \url{https://statmodeling.stat.columbia.edu/2019/09/10/i-hate-bayes-factors-when-theyre-used-for-null-hypothesis-significance-testing/}
+\item
+  In favor of null hypothesis testing with BF as an approximation (but assuming realistic effects): \url{https://statmodeling.stat.columbia.edu/2018/03/10/incorporating-bayes-factor-understanding-scientific-information-replication-crisis/}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{References}
+\protect\hypertarget{references}{}
+
+\hypertarget{refs}{}
+\leavevmode\hypertarget{ref-Gelman14}{}%
+Gelman, Andrew, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari, and Donald B. Rubin. 2014. \emph{Bayesian Data Analysis}. Third. Boca Raton, FL: Chapman; Hall/CRC.
+
+\leavevmode\hypertarget{ref-gronauLimitationsBayesianLeaveOneOut2018}{}%
+Gronau, Quentin F., and Eric-Jan Wagenmakers. 2018. ``Limitations of Bayesian Leave-One-Out Cross-Validation for Model Selection.'' \emph{Computational Brain \& Behavior}, September. \url{https://doi.org/10.1007/s42113-018-0011-7}.
+
+\leavevmode\hypertarget{ref-gronauRejoinderMoreLimitations}{}%
+Gronau, Quentin F, and Eric-Jan Wagenmakers. n.d. ``Rejoinder: More Limitations of Bayesian Leave-One-Out Cross-Validation,'' 25.
+
+\leavevmode\hypertarget{ref-vehtariLimitationsLimitationsBayesian2019}{}%
+Vehtari, Aki, Daniel P. Simpson, Yuling Yao, and Andrew Gelman. 2019. ``Limitations of `Limitations of Bayesian Leave-One-Out Cross-Validation for Model Selection'.'' \emph{Computational Brain \& Behavior} 2 (1): 22--27. \url{https://doi.org/10.1007/s42113-018-0020-6}.
+
+\leavevmode\hypertarget{ref-verhagenBayesianTestsQuantify2014}{}%
+Verhagen, Josine, and Eric-Jan Wagenmakers. 2014. ``Bayesian Tests to Quantify the Result of a Replication Attempt.'' \emph{Journal of Experimental Psychology: General} 143 (4): 1457--75. \url{https://doi.org/10.1037/a0036731}.
+
+\end{frame}
+
+\end{document}

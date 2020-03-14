@@ -8,8 +8,12 @@ bibliography: ["BayesCogSci.bib", "packages.bib"]
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+## 1. By-participants and by-items N400 model
 
-## Hierarchical model with a lognormal likelihood
+Everything I said about by-participants group level (or random effects) is also relevant for by-items. Fit a by-participants and by-items maximal model.
+
+
+## 2. Hierarchical model with a lognormal likelihood
 
  We begin with a classic question from the psycholinguistics literature: are subject relatives easier to process than object relatives? The data come from Experiment 1 in a paper by @grodner.
 
