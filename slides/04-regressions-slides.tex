@@ -154,7 +154,7 @@
 
 \title{Bayesian regression models}
 \author{Bruno Nicenboim / Shravan Vasishth}
-\date{2020-03-14}
+\date{2020-03-15}
 
 \begin{document}
 \frame{\titlepage}
@@ -1001,7 +1001,8 @@ We calculate an estimate if we consider the difference between reaction times in
 \begin{Highlighting}[]
 \NormalTok{alpha_samples <-}\StringTok{ }\KeywordTok{posterior_samples}\NormalTok{(fit_press_trial)}\OperatorTok{$}\NormalTok{b_Intercept}
 \NormalTok{beta_samples <-}\StringTok{ }\KeywordTok{posterior_samples}\NormalTok{(fit_press_trial)}\OperatorTok{$}\NormalTok{b_c_trial}
-\NormalTok{effect_middle_ms <-}\StringTok{ }\KeywordTok{exp}\NormalTok{(alpha_samples) }\OperatorTok{-}\StringTok{ }\KeywordTok{exp}\NormalTok{(alpha_samples }\OperatorTok{-}\StringTok{ }\DecValTok{1} \OperatorTok{*}\StringTok{ }\NormalTok{beta_samples)}
+\NormalTok{effect_middle_ms <-}\StringTok{ }\KeywordTok{exp}\NormalTok{(alpha_samples) }\OperatorTok{-}
+\StringTok{  }\KeywordTok{exp}\NormalTok{(alpha_samples }\OperatorTok{-}\StringTok{ }\DecValTok{1} \OperatorTok{*}\StringTok{ }\NormalTok{beta_samples)}
 \CommentTok{## ms effect in the middle of the expt (mean trial vs. mean trial - 1 )}
 \KeywordTok{c}\NormalTok{(}\DataTypeTok{mean =} \KeywordTok{mean}\NormalTok{(effect_middle_ms), }\KeywordTok{quantile}\NormalTok{(effect_middle_ms, }\KeywordTok{c}\NormalTok{(.}\DecValTok{025}\NormalTok{, }\FloatTok{.975}\NormalTok{)))}
 \end{Highlighting}
@@ -1689,13 +1690,13 @@ Average accuracy for the task:
 
 Effect of our manipulation
 
-\small
+\scriptsize
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{beta_samples <-}\StringTok{ }\KeywordTok{posterior_samples}\NormalTok{(fit_recall)}\OperatorTok{$}\NormalTok{b_c_set_size}
-\NormalTok{effect_middle <-}\StringTok{ }\KeywordTok{plogis}\NormalTok{(alpha_samples) }\OperatorTok{-}\StringTok{ }\KeywordTok{plogis}\NormalTok{(alpha_samples }\OperatorTok{-}\StringTok{ }\NormalTok{beta_samples)}
-\KeywordTok{c}\NormalTok{(}\DataTypeTok{mean =} \KeywordTok{mean}\NormalTok{(effect_middle), }\KeywordTok{quantile}\NormalTok{(effect_middle, }\KeywordTok{c}\NormalTok{(.}\DecValTok{025}\NormalTok{, }\FloatTok{.975}\NormalTok{)))}
+\NormalTok{effect_av_set_size <-}\StringTok{ }\KeywordTok{plogis}\NormalTok{(alpha_samples) }\OperatorTok{-}\StringTok{ }\KeywordTok{plogis}\NormalTok{(alpha_samples }\OperatorTok{-}\StringTok{ }\NormalTok{beta_samples)}
+\KeywordTok{c}\NormalTok{(}\DataTypeTok{mean =} \KeywordTok{mean}\NormalTok{(effect_av_set_size), }\KeywordTok{quantile}\NormalTok{(effect_av_set_size, }\KeywordTok{c}\NormalTok{(.}\DecValTok{025}\NormalTok{, }\FloatTok{.975}\NormalTok{)))}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1719,12 +1720,14 @@ Recall that the average set size, 5, was not presented to the subject!
 
 Decrease in accuracy from a set size of 2 to 4:
 
-\small
+\scriptsize
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{effect_4m2 <-}\StringTok{ }\KeywordTok{plogis}\NormalTok{(alpha_samples }\OperatorTok{+}\StringTok{ }\NormalTok{(}\DecValTok{4} \OperatorTok{-}\StringTok{ }\KeywordTok{mean}\NormalTok{(df_recall_data}\OperatorTok{$}\NormalTok{set_size)) }\OperatorTok{*}\StringTok{ }\NormalTok{beta_samples) }\OperatorTok{-}
-\StringTok{  }\KeywordTok{plogis}\NormalTok{(alpha_samples }\OperatorTok{+}\StringTok{ }\NormalTok{(}\DecValTok{2} \OperatorTok{-}\StringTok{ }\KeywordTok{mean}\NormalTok{(df_recall_data}\OperatorTok{$}\NormalTok{set_size)) }\OperatorTok{*}\StringTok{ }\NormalTok{beta_samples)}
+\NormalTok{set4 <-}\StringTok{ }\DecValTok{4} \OperatorTok{-}\StringTok{ }\KeywordTok{mean}\NormalTok{(df_recall_data}\OperatorTok{$}\NormalTok{set_size)}
+\NormalTok{set2 <-}\StringTok{ }\DecValTok{2} \OperatorTok{-}\StringTok{ }\KeywordTok{mean}\NormalTok{(df_recall_data}\OperatorTok{$}\NormalTok{set_size)}
+\NormalTok{effect_4m2 <-}\StringTok{ }\KeywordTok{plogis}\NormalTok{(alpha_samples }\OperatorTok{+}\StringTok{ }\NormalTok{set4 }\OperatorTok{*}\StringTok{ }\NormalTok{beta_samples) }\OperatorTok{-}
+\StringTok{  }\KeywordTok{plogis}\NormalTok{(alpha_samples }\OperatorTok{+}\StringTok{ }\NormalTok{set2 }\OperatorTok{*}\StringTok{ }\NormalTok{beta_samples)}
 \KeywordTok{c}\NormalTok{(}\DataTypeTok{mean =} \KeywordTok{mean}\NormalTok{(effect_4m2), }\KeywordTok{quantile}\NormalTok{(effect_4m2, }\KeywordTok{c}\NormalTok{(.}\DecValTok{025}\NormalTok{, }\FloatTok{.975}\NormalTok{)))}
 \end{Highlighting}
 \end{Shaded}

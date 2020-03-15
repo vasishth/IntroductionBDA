@@ -608,7 +608,8 @@ We calculate an estimate if we consider the difference between reaction times in
 ```{r, size="scriptsize"}
 alpha_samples<- posterior_samples(fit_press_trial)$b_Intercept
 beta_samples<- posterior_samples(fit_press_trial)$b_c_trial
-effect_middle_ms <- exp(alpha_samples) - exp(alpha_samples - 1* beta_samples)
+effect_middle_ms <- exp(alpha_samples) - 
+  exp(alpha_samples - 1* beta_samples)
 ## ms effect in the middle of the expt (mean trial vs. mean trial - 1 ) 
 c(mean = mean(effect_middle_ms), quantile(effect_middle_ms, c(.025,.975)))
 ```
@@ -1043,15 +1044,15 @@ Effect of our manipulation
   <!-- - the scale is not linear -->
   <!-- - the effect of increasing the set size depends on the average accuracy, and the set size that we start from. -->
 
-```{r}
+```{r, size = "scriptsize"}
 beta_samples<- posterior_samples(fit_recall)$b_c_set_size
-effect_middle <- plogis(alpha_samples) - plogis(alpha_samples - beta_samples)
-c(mean = mean(effect_middle), quantile(effect_middle, c(.025,.975)))
+effect_av_set_size <- plogis(alpha_samples) - plogis(alpha_samples - beta_samples)
+c(mean = mean(effect_av_set_size), quantile(effect_av_set_size, c(.025,.975)))
 ```
 
 Notice the interpretation here: 
 
-*if we increase the set size from the average set size minus one to the average set size (5), we get a reduction in the accuracy of recall of $`r mean(effect_middle)`$, 95% CrI = $[ `r quantile(effect_middle, .025)` , `r quantile(effect_middle, .975)` ]$.* 
+*if we increase the set size from the average set size minus one to the average set size (5), we get a reduction in the accuracy of recall of $`r mean(effect_av_set_size)`$, 95% CrI = $[ `r quantile(effect_av_set_size, .025)` , `r quantile(effect_av_set_size, .975)` ]$.* 
 
 ## Effect in proportions
 
@@ -1060,9 +1061,11 @@ Recall that the average set size, 5, was not presented to the subject!
 Decrease in accuracy from a set size of 2 to 4:
 
 
-```{r}
-effect_4m2 <- plogis(alpha_samples+  (4 - mean(df_recall_data$set_size)) * beta_samples) -
-    plogis(alpha_samples+  (2 - mean(df_recall_data$set_size)) * beta_samples)
+```{r, size = "scriptsize"}
+set4 <- 4 - mean(df_recall_data$set_size)
+set2 <- 2 - mean(df_recall_data$set_size)
+effect_4m2 <- plogis(alpha_samples + set4 * beta_samples) -
+              plogis(alpha_samples + set2  * beta_samples)
 c(mean = mean(effect_4m2), quantile(effect_4m2, c(.025,.975)))
 ```
 

@@ -42,7 +42,7 @@ ggplot2::theme_set(ggplot2::theme_light())
 library(partitions)
 ```
 
-
+----
 
 ```{r load, cache =FALSE, message=FALSE, echo =FALSE}
 set.seed(42)
