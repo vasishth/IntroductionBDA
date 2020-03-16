@@ -1,6 +1,4 @@
 \documentclass[12pt]{article}
-\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
-\geometry{a4paper}                   % ... or a4paper or a5paper or ... 
 %\geometry{landscape}                % Activate for for rotated page geometry
 %\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
 \usepackage{graphicx}
@@ -8,7 +6,7 @@
 \usepackage{epstopdf}
 \DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
 
-\title{Additional notes on MCMC sampling \n    Bayesian Linear Modeling (Winter 2018-19)}
+\title{Additional notes on MCMC sampling}
 \author{Shravan Vasishth}
 \date{\today}                                           % 
 \bibliographystyle{plain}
@@ -1220,5 +1218,5 @@ The Gelman-Rubin (or Brooks-Gelman-Rubin) diagnostic involves sampling from mult
 
 There are other methods of sampling available than the ones presented above. Examples are slice sampling and adaptive rejection sampling. But for our purposes we only need to know how the Gibbs and MH algorithms work, and that too only \textit{in principle}; we will never need to implement them for data analysis. Stan will do the sampling for us (using HMC of course).
 
-\bibliography{/Users/shravanvasishth/Dropbox/Bibliography/bibcleaned.bib}
+\bibliography{biblio.bib}
 \end{document}
