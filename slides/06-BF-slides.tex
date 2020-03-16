@@ -154,7 +154,7 @@
 
 \title{Model comparison with Bayes factor}
 \author{Bruno Nicenboim / Shravan Vasishth}
-\date{2020-03-15}
+\date{2020-03-16}
 
 \begin{document}
 \frame{\titlepage}
@@ -442,24 +442,16 @@ We are going to ``smooth'' the Cloze probability in this example:
 ## 
 ## Group-Level Effects: 
 ## ~item (Number of levels: 80) 
-##                        Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
-## sd(Intercept)              1.51      0.34     0.82     2.16 1.00    27153
-## sd(cscloze)                1.91      1.02     0.12     3.88 1.00    21533
-## cor(Intercept,cscloze)    -0.26      0.29    -0.74     0.38 1.00    62181
-##                        Tail_ESS
-## sd(Intercept)             35328
-## sd(cscloze)               28485
-## cor(Intercept,cscloze)    53276
+##                        Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## sd(Intercept)              1.51      0.34     0.82     2.16 1.00    27153    35328
+## sd(cscloze)                1.91      1.02     0.12     3.88 1.00    21533    28485
+## cor(Intercept,cscloze)    -0.26      0.29    -0.74     0.38 1.00    62181    53276
 ## 
 ## ~subject (Number of levels: 37) 
-##                        Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
-## sd(Intercept)              2.16      0.35     1.54     2.91 1.00    30933
-## sd(cscloze)                1.26      0.81     0.06     3.00 1.00    28600
-## cor(Intercept,cscloze)     0.08      0.30    -0.53     0.64 1.00   106208
-##                        Tail_ESS
-## sd(Intercept)             46745
-## sd(cscloze)               40319
-## cor(Intercept,cscloze)    53749
+##                        Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## sd(Intercept)              2.16      0.35     1.54     2.91 1.00    30933    46745
+## sd(cscloze)                1.26      0.81     0.06     3.00 1.00    28600    40319
+## cor(Intercept,cscloze)     0.08      0.30    -0.53     0.64 1.00   106208    53749
 ## 
 ## Population-Level Effects: 
 ##           Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
@@ -523,24 +515,16 @@ And we'll run our model without the parameter of interest, the null model:
 ## 
 ## Group-Level Effects: 
 ## ~item (Number of levels: 80) 
-##                        Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
-## sd(Intercept)              1.42      0.35     0.71     2.08 1.00    23430
-## sd(cscloze)                2.92      1.02     0.60     4.76 1.00    18182
-## cor(Intercept,cscloze)    -0.34      0.25    -0.76     0.22 1.00    45534
-##                        Tail_ESS
-## sd(Intercept)             25594
-## sd(cscloze)               18089
-## cor(Intercept,cscloze)    47787
+##                        Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## sd(Intercept)              1.42      0.35     0.71     2.08 1.00    23430    25594
+## sd(cscloze)                2.92      1.02     0.60     4.76 1.00    18182    18089
+## cor(Intercept,cscloze)    -0.34      0.25    -0.76     0.22 1.00    45534    47787
 ## 
 ## ~subject (Number of levels: 37) 
-##                        Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
-## sd(Intercept)              2.15      0.35     1.54     2.91 1.00    33189
-## sd(cscloze)                1.80      0.97     0.12     3.70 1.00    20586
-## cor(Intercept,cscloze)     0.09      0.28    -0.48     0.62 1.00    87320
-##                        Tail_ESS
-## sd(Intercept)             49814
-## sd(cscloze)               29783
-## cor(Intercept,cscloze)    56711
+##                        Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## sd(Intercept)              2.15      0.35     1.54     2.91 1.00    33189    49814
+## sd(cscloze)                1.80      0.97     0.12     3.70 1.00    20586    29783
+## cor(Intercept,cscloze)     0.09      0.28    -0.48     0.62 1.00    87320    56711
 ## 
 ## Population-Level Effects: 
 ##           Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
@@ -630,38 +614,32 @@ How to overcome this?
 \small
 
 (This will take a very long time)
-\vspace{.3cm}
+\vspace{.1cm}
 \tiny
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{prior_sd <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\FloatTok{1.5}\NormalTok{, }\DecValTok{2}\NormalTok{, }\FloatTok{2.5}\NormalTok{, }\DecValTok{5}\NormalTok{, }\DecValTok{8}\NormalTok{, }\DecValTok{10}\NormalTok{, }\DecValTok{20}\NormalTok{, }\DecValTok{40}\NormalTok{, }\DecValTok{50}\NormalTok{)}
-\CommentTok{## prior_sd <- c(1, 2, 5, 8, 20)}
+\NormalTok{prior_sd <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\FloatTok{1.5}\NormalTok{, }\DecValTok{2}\NormalTok{,}\FloatTok{2.5}\NormalTok{, }\DecValTok{5}\NormalTok{, }\DecValTok{8}\NormalTok{, }\DecValTok{10}\NormalTok{, }\DecValTok{20}\NormalTok{, }\DecValTok{40}\NormalTok{, }\DecValTok{50}\NormalTok{)}
 \NormalTok{BFs <-}\StringTok{ }\KeywordTok{map_dfr}\NormalTok{(prior_sd, }\ControlFlowTok{function}\NormalTok{(psd) \{}
-  \KeywordTok{gc}\NormalTok{()}
-\NormalTok{  fit <-}\StringTok{ }\KeywordTok{brm}\NormalTok{(n400 }\OperatorTok{~}\StringTok{ }\NormalTok{cscloze }\OperatorTok{+}
-\StringTok{    }\NormalTok{(cscloze }\OperatorTok{|}\StringTok{ }\NormalTok{subject) }\OperatorTok{+}
-\StringTok{    }\NormalTok{(cscloze }\OperatorTok{|}\StringTok{ }\NormalTok{item),}
-  \DataTypeTok{prior =}
-    \KeywordTok{c}\NormalTok{(}
-      \KeywordTok{prior}\NormalTok{(}\KeywordTok{normal}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{5}\NormalTok{), }\DataTypeTok{class =}\NormalTok{ Intercept),}
-      \KeywordTok{set_prior}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(}\StringTok{"normal(0,"}\NormalTok{, psd, }\StringTok{")"}\NormalTok{),}
-        \DataTypeTok{class =} \StringTok{"b"}
-\NormalTok{      ),}
-      \KeywordTok{prior}\NormalTok{(}\KeywordTok{normal}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{5}\NormalTok{), }\DataTypeTok{class =}\NormalTok{ sigma),}
-      \CommentTok{## taus in our model}
-      \KeywordTok{prior}\NormalTok{(}\KeywordTok{normal}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{2}\NormalTok{), }\DataTypeTok{class =}\NormalTok{ sd),}
-      \KeywordTok{prior}\NormalTok{(}\KeywordTok{lkj}\NormalTok{(}\DecValTok{4}\NormalTok{), }\DataTypeTok{class =}\NormalTok{ cor)}
-\NormalTok{    ),}
-  \DataTypeTok{warmup =} \DecValTok{2000}\NormalTok{,}
-  \DataTypeTok{iter =} \DecValTok{20000}\NormalTok{,}
-  \DataTypeTok{control =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{adapt_delta =} \FloatTok{0.9}\NormalTok{),}
-  \DataTypeTok{save_all_pars =} \OtherTok{TRUE}\NormalTok{,}
-  \DataTypeTok{data =}\NormalTok{ eeg_data}
-\NormalTok{  )}
-
-\NormalTok{  lml_linear_beta <-}\StringTok{ }\KeywordTok{bridge_sampler}\NormalTok{(fit, }\DataTypeTok{silent =} \OtherTok{TRUE}\NormalTok{)}
-  \KeywordTok{tibble}\NormalTok{(}\DataTypeTok{beta_sd =}\NormalTok{ psd, }\DataTypeTok{BF =} \KeywordTok{bayes_factor}\NormalTok{(lml_linear_beta, lml_null)}\OperatorTok{$}\NormalTok{bf)}
+    \KeywordTok{gc}\NormalTok{() }\CommentTok{# force R "garbage collector" so that we don't run out of memory}
+\NormalTok{    fit <-}\StringTok{ }\KeywordTok{brm}\NormalTok{(n400 }\OperatorTok{~}\StringTok{ }\NormalTok{cscloze }\OperatorTok{+}
+\StringTok{                   }\NormalTok{(cscloze }\OperatorTok{|}\StringTok{ }\NormalTok{subject) }\OperatorTok{+}
+\StringTok{                   }\NormalTok{(cscloze }\OperatorTok{|}\StringTok{ }\NormalTok{item),}
+               \DataTypeTok{prior =}
+                 \KeywordTok{c}\NormalTok{(}\KeywordTok{prior}\NormalTok{(}\KeywordTok{normal}\NormalTok{(}\DecValTok{2}\NormalTok{, }\DecValTok{5}\NormalTok{), }\DataTypeTok{class =}\NormalTok{ Intercept),}
+                   \KeywordTok{set_prior}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(}\StringTok{"normal(0,"}\NormalTok{,psd ,}\StringTok{")"}\NormalTok{),}
+                             \DataTypeTok{class =} \StringTok{"b"}\NormalTok{),}
+                   \KeywordTok{prior}\NormalTok{(}\KeywordTok{normal}\NormalTok{(}\DecValTok{10}\NormalTok{, }\DecValTok{5}\NormalTok{), }\DataTypeTok{class =}\NormalTok{ sigma),}
+                   \CommentTok{## taus in our model}
+                   \KeywordTok{prior}\NormalTok{(}\KeywordTok{normal}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{2}\NormalTok{), }\DataTypeTok{class =}\NormalTok{ sd),}
+                   \KeywordTok{prior}\NormalTok{(}\KeywordTok{lkj}\NormalTok{(}\DecValTok{4}\NormalTok{), }\DataTypeTok{class =}\NormalTok{cor)),}
+               \DataTypeTok{warmup =} \DecValTok{2000}\NormalTok{,}
+               \DataTypeTok{iter =} \DecValTok{20000}\NormalTok{,}
+               \DataTypeTok{control =} \KeywordTok{list}\NormalTok{(}\DataTypeTok{adapt_delta =} \FloatTok{0.9}\NormalTok{),}
+               \DataTypeTok{save_all_pars =} \OtherTok{TRUE}\NormalTok{,}
+               \DataTypeTok{data =}\NormalTok{ eeg_data)}
+\NormalTok{    lml_linear_beta <-}\StringTok{ }\KeywordTok{bridge_sampler}\NormalTok{(fit, }\DataTypeTok{silent =} \OtherTok{TRUE}\NormalTok{)}
+    \KeywordTok{tibble}\NormalTok{(}\DataTypeTok{beta_sd =}\NormalTok{ psd, }\DataTypeTok{BF =} \KeywordTok{bayes_factor}\NormalTok{(lml_linear_beta, lml_null)}\OperatorTok{$}\NormalTok{bf)}
 \NormalTok{\})}
 \end{Highlighting}
 \end{Shaded}
@@ -770,24 +748,16 @@ One possible solution is to force them to have the same SD:
 ## 
 ## Group-Level Effects: 
 ## ~item (Number of levels: 80) 
-##                           Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
-## sd(Intercept)                 1.52      0.34     0.82     2.17 1.00    23552
-## sd(clogscloze)                1.40      0.88     0.07     3.25 1.00    26927
-## cor(Intercept,clogscloze)    -0.15      0.31    -0.70     0.49 1.00    80968
-##                           Tail_ESS
-## sd(Intercept)                23901
-## sd(clogscloze)               35507
-## cor(Intercept,clogscloze)    54969
+##                           Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## sd(Intercept)                 1.52      0.34     0.82     2.17 1.00    23552    23901
+## sd(clogscloze)                1.40      0.88     0.07     3.25 1.00    26927    35507
+## cor(Intercept,clogscloze)    -0.15      0.31    -0.70     0.49 1.00    80968    54969
 ## 
 ## ~subject (Number of levels: 37) 
-##                           Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS
-## sd(Intercept)                 2.15      0.35     1.53     2.90 1.00    30355
-## sd(clogscloze)                1.27      0.82     0.06     3.03 1.00    26687
-## cor(Intercept,clogscloze)     0.04      0.30    -0.55     0.61 1.00   102306
-##                           Tail_ESS
-## sd(Intercept)                47870
-## sd(clogscloze)               34820
-## cor(Intercept,clogscloze)    51214
+##                           Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
+## sd(Intercept)                 2.15      0.35     1.53     2.90 1.00    30355    47870
+## sd(clogscloze)                1.27      0.82     0.06     3.03 1.00    26687    34820
+## cor(Intercept,clogscloze)     0.04      0.30    -0.55     0.61 1.00   102306    51214
 ## 
 ## Population-Level Effects: 
 ##            Estimate Est.Error l-95% CI u-95% CI Rhat Bulk_ESS Tail_ESS
