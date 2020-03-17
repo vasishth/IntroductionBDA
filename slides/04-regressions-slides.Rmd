@@ -644,7 +644,7 @@ There is a slowdown in both cases.
 
 ### \color{blue} Exercises
 
-4.6.2.1 Estimate the slowdown in milliseconds for the last time the subject pressed the space bar in the experiment.
+4.6.2.1 Estimate the slowdown in milliseconds between the last two times the subject pressed the space bar in the experiment.
 
 4.6.2.2 How would you change your model (keeping the log-normal likelihood) so that it includes centered log-transformed trial numbers or square-root-transformed trial numbers (instead of centered trial numbers)? Does the effect in milliseconds change?
 

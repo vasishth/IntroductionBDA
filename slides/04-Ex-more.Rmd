@@ -1,0 +1,30 @@
+---
+title: "More exercises for regression models"
+author: Bruno Nicenboim and Shravan Vasishth
+output: pdf_document
+bibliography: ["BayesCogSci.bib", "packages.bib"]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+**4.6.3.1** Our dataset includes also a column coded as `tested` that indicates the position of the queued word (from 1 to set size of each trial). Could it be that the position has also an effect on the recall accuracy? How would you incorporate this in the model? Verify the descriptive adequacy of our new model.
+
+Load the dataset as follows:
+
+```{r,  message = FALSE, warning = FALSE}
+library(readr)
+library(dplyr)
+df_recall_data <- read_csv("./data/PairsRSS1_all.csv") %>%
+    # We ignore the type of incorrect responses (the focus of the paper)
+    mutate(correct = if_else(response_category ==1, 1, 0)) %>%
+    # and we only use the data from the free recall task:
+    # (when there was no list of possible responses)
+    filter(response_size_list + response_size_new_words == 0) %>%
+    # We select one subject
+    filter(subject == 10) %>%
+    mutate(c_set_size = set_size - mean(set_size)) %>%
+    select(subject, set_size, c_set_size, correct, trial, session, block, tested)
+
+```
