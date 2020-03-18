@@ -655,7 +655,7 @@ hist(mu,xlab=expression(mu))
 hist(sig2,xlab=expression(sigma^2))
 @
 
-\paragraph{Example of second approach}
+\subsection{Example of second approach}
 
 Here, we sample $\mu$ and $\sigma^2$ sequentially from their conditional distributions.
 
