@@ -7,7 +7,7 @@ output:
     theme: "metropolis"
     keep_tex: yes 
     latex_engine: xelatex
-    slide_leve  l: 2
+    slide_level: 2
     incremental: no
     number_sections: true
     includes: 
@@ -23,7 +23,7 @@ header-includes:
 # Model comparison
   
   
-  ```{r setup, include=FALSE, cache=FALSE}
+```{r setup, include=FALSE, cache=FALSE}
 knitr::opts_chunk$set(tidy = "styler",
                       cache=TRUE
 )
@@ -35,7 +35,8 @@ knitr::opts_chunk$set(tidy = "styler",
 
 options(htmltools.dir.version = FALSE,
         scipen=999,
-        digits=3)
+        digits=3,
+        width =90)
 library(papaja)
 library(bookdown)
 ggplot2::theme_set(ggplot2::theme_light())
@@ -247,7 +248,7 @@ if(!file.exists("m_N400_h_linear.RDS")){
 
 \tiny
 
-```{r}
+```{r, size = "scriptsize"}
 m_N400_h_linear
 ```
 
@@ -283,7 +284,7 @@ if(!file.exists("m_N400_h_null.RDS")){
   
   \tiny
 
-```{r}
+```{r, size = "scriptsize"}
 m_N400_h_null
 ```
 
@@ -341,14 +342,13 @@ How to overcome this?
 ##  Bayes factor for several models
 \small
 (This will take a very long time)
-\vspace{.3cm}
+\vspace{.1cm}
 \tiny
 
-```{r , eval = !file.exists("BFs.RDS")}
+```{r , eval = !file.exists("BFs.RDS"), size = "scriptsize", tidy = FALSE}
 prior_sd <- c(1, 1.5, 2,2.5, 5, 8, 10, 20, 40, 50)
-## prior_sd <- c(1, 2, 5, 8, 20)
 BFs <- map_dfr(prior_sd, function(psd) {
-    gc()
+    gc() # force R "garbage collector" so that we don't run out of memory
     fit <- brm(n400 ~ cscloze +
                    (cscloze | subject) +
                    (cscloze | item),
@@ -365,7 +365,6 @@ BFs <- map_dfr(prior_sd, function(psd) {
                control = list(adapt_delta = 0.9),
                save_all_pars = TRUE,
                data = eeg_data)
-     
     lml_linear_beta <- bridge_sampler(fit, silent = TRUE)
     tibble(beta_sd = psd, BF = bayes_factor(lml_linear_beta, lml_null)$bf)
 })
@@ -464,8 +463,8 @@ gc()
 
 \tiny
 
-```{r}
-m_N400_h_log
+```{r, size = "scriptsize"}
+m_N400_h_log 
 ```
 
 ----
