@@ -1,0 +1,28 @@
+---
+title: "Exercises for Bayesian factors"
+author: Bruno Nicenboim and Shravan Vasishth
+output: pdf_document
+bibliography: ["BayesCogSci.bib", "packages.bib"]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Consider again the reading time data come from Experiment 1 of @grodner. We'll try to quantify the evidence against the null model (no difference between SRC and ORC) relative to the following alternative models:
+
+<!-- a. The difference between conditions can be anything. -->
+a. $\beta \sim Normal(0, 1)$
+b. $\beta \sim Normal(0, .1)$
+c. $\beta \sim Normal(0, .01)$
+d. $\beta \sim Normal_+(0, 1)$
+e. $\beta \sim Normal_+(0, .1)$
+f. $\beta \sim Normal_+(0, .01)$
+
+(A $Normal_+(.)$ prior can be set in brms by defining a lower boundary as 0, with the argument `lb = 0`.)
+
+What is the Bayes factor against the null and in favor of the alternative models a-f? 
+
+
+
+## References
